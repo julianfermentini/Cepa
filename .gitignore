@@ -1,0 +1,43 @@
+# Binarios
+bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Go
+*.test
+*.out
+/vendor/
+
+# Env
+.env
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+ai-sidecar/.venv/
+ai-sidecar/venv/
+
+# Node
+frontend/dashboard/node_modules/
+frontend/consumer/node_modules/
+frontend/dashboard/.next/
+frontend/consumer/.next/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Docker volumes (si se persisten localmente)
+.docker/
+
+# tmp (air hot reload)
+tmp/
