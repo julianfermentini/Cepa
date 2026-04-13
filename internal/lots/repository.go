@@ -235,3 +235,52 @@ func joinClauses(clauses []string) string {
 	}
 	return result
 }
+
+// FindQRByLotID busca el QR code de un lote.
+func (r *Repository) FindQRByLotID(ctx context.Context, lotID uuid.UUID) (*QRCode, error) {
+	query := `
+		SELECT id, lot_id, short_code, target_url, created_at
+		FROM qr_codes WHERE lot_id = $1
+	`
+	row := r.pool.QueryRow(ctx, query, lotID)
+	qr := &QRCode{}
+	err := row.Scan(&qr.ID, &qr.LotID, &qr.ShortCode, &qr.TargetURL, &qr.CreatedAt)
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, nil
+		}
+		return nil, fmt.Errorf("lots.repository: buscar QR: %w", err)
+	}
+	return qr, nil
+}
+
+// CreateQR inserta un nuevo código QR para un lote.
+func (r *Repository) CreateQR(ctx context.Context, lotID uuid.UUID, shortCode, targetURL string) (*QRCode, error) {
+	qr := &QRCode{
+		ID:        uuid.New(),
+		LotID:     lotID,
+		ShortCode: shortCode,
+		TargetURL: targetURL,
+		CreatedAt: time.Now().UTC(),
+	}
+	_, err := r.pool.Exec(ctx,
+		`INSERT INTO qr_codes (id, lot_id, short_code, target_url, created_at) VALUES ($1, $2, $3, $4, $5)`,
+		qr.ID, qr.LotID, qr.ShortCode, qr.TargetURL, qr.CreatedAt,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("lots.repository: crear QR: %w", err)
+	}
+	return qr, nil
+}
+
+// UpdateStatus actualiza el estado de un lote.
+func (r *Repository) UpdateStatus(ctx context.Context, id, wineryID uuid.UUID, status string) error {
+	_, err := r.pool.Exec(ctx,
+		`UPDATE lots SET status = $1 WHERE id = $2 AND winery_id = $3 AND deleted_at IS NULL`,
+		status, id, wineryID,
+	)
+	if err != nil {
+		return fmt.Errorf("lots.repository: actualizar estado: %w", err)
+	}
+	return nil
+}

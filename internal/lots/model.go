@@ -77,3 +77,19 @@ type ListParams struct {
 	Cursor *uuid.UUID
 	Status string
 }
+
+// QRCode representa un código QR vinculado a un lote.
+type QRCode struct {
+	ID        uuid.UUID
+	LotID     uuid.UUID
+	ShortCode string
+	TargetURL string
+	CreatedAt time.Time
+}
+
+// PublishResult resultado de publicar un lote.
+type PublishResult struct {
+	ShortCode   string `json:"short_code"`
+	ConsumerURL string `json:"consumer_url"`
+	LotID       string `json:"lot_id"`
+}

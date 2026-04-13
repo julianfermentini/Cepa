@@ -7,6 +7,9 @@ import Dashboard from './pages/Dashboard'
 import Lots from './pages/Lots'
 import LotForm from './pages/LotForm'
 import LotDetail from './pages/LotDetail'
+import WineLanding from './pages/WineLanding'
+import Analytics from './pages/Analytics'
+import Certificate from './pages/Certificate'
 
 export default function App() {
   return (
@@ -23,6 +26,11 @@ export default function App() {
           <Route path="/lots/new" element={<ProtectedRoute><LotForm /></ProtectedRoute>} />
           <Route path="/lots/:id" element={<ProtectedRoute><LotDetail /></ProtectedRoute>} />
           <Route path="/lots/:id/edit" element={<ProtectedRoute><LotForm /></ProtectedRoute>} />
+          <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
+
+          {/* Rutas públicas del consumidor — sin auth */}
+          <Route path="/wine/:short_code" element={<WineLanding />} />
+          <Route path="/wine/:short_code/certificate" element={<Certificate />} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

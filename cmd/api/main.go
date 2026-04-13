@@ -10,7 +10,9 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/cepa/api/internal/analytics"
 	"github.com/cepa/api/internal/auth"
+	"github.com/cepa/api/internal/experience"
 	"github.com/cepa/api/internal/lots"
 	"github.com/cepa/api/internal/response"
 	"github.com/cepa/api/pkg/cache"
@@ -60,7 +62,7 @@ func main() {
 	// Health check
 	r.Get("/health", healthHandler)
 
-	// Auth routes
+	// Auth
 	authRepo := auth.NewRepository(pool)
 	authService := auth.NewService(authRepo, cfg)
 	authHandler := auth.NewHandler(authService)
@@ -71,12 +73,11 @@ func main() {
 		r.Post("/refresh", authHandler.Refresh)
 	})
 
-	// Lots routes (requieren auth)
+	// Lots (requieren auth)
+	authMiddleware := auth.NewMiddleware(cfg)
 	lotsRepo := lots.NewRepository(pool)
 	lotsService := lots.NewService(lotsRepo)
-	lotsHandler := lots.NewHandler(lotsService)
-
-	authMiddleware := auth.NewMiddleware(cfg)
+	lotsHandler := lots.NewHandler(lotsService, cfg)
 
 	r.Route("/api/v1/lots", func(r chi.Router) {
 		r.Use(authMiddleware.RequireAuth)
@@ -85,6 +86,31 @@ func main() {
 		r.Get("/{id}", lotsHandler.Get)
 		r.Put("/{id}", lotsHandler.Update)
 		r.Delete("/{id}", lotsHandler.Delete)
+		r.Post("/{id}/publish", lotsHandler.Publish)
+	})
+
+	// Experience — endpoints públicos del consumidor
+	expRepo := experience.NewRepository(pool)
+	expService := experience.NewService(expRepo)
+	// consumerBase: base URL de la landing del consumidor
+	consumerBase := cfg.QRBaseURL // ej: http://localhost:3000/wine
+	expHandler := experience.NewHandler(expService, consumerBase)
+
+	r.Get("/q/{short_code}", expHandler.Redirect)
+	r.Route("/api/v1/public", func(r chi.Router) {
+		r.Get("/lots/{short_code}", expHandler.GetPublicLot)
+	})
+
+	// Analytics (requieren auth)
+	analyticsRepo := analytics.NewRepository(pool)
+	analyticsService := analytics.NewService(analyticsRepo)
+	analyticsHandler := analytics.NewHandler(analyticsService)
+
+	r.Route("/api/v1/analytics", func(r chi.Router) {
+		r.Use(authMiddleware.RequireAuth)
+		r.Get("/overview", analyticsHandler.GetOverview)
+		r.Get("/lots/top", analyticsHandler.GetTopLots)
+		r.Get("/countries", analyticsHandler.GetCountries)
 	})
 
 	srv := &http.Server{
@@ -95,7 +121,6 @@ func main() {
 		IdleTimeout:  60 * time.Second,
 	}
 
-	// Graceful shutdown
 	serverErr := make(chan error, 1)
 	go func() {
 		slog.Info("servidor iniciado", "port", cfg.Port)

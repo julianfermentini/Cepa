@@ -8,16 +8,18 @@ import (
 
 	"github.com/cepa/api/internal/auth"
 	"github.com/cepa/api/internal/response"
+	"github.com/cepa/api/pkg/config"
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 )
 
 type Handler struct {
 	svc *Service
+	cfg *config.Config
 }
 
-func NewHandler(svc *Service) *Handler {
-	return &Handler{svc: svc}
+func NewHandler(svc *Service, cfg *config.Config) *Handler {
+	return &Handler{svc: svc, cfg: cfg}
 }
 
 // List godoc
@@ -132,6 +134,30 @@ func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response.OK(w, http.StatusOK, lot)
+}
+
+// Publish godoc
+// POST /api/v1/lots/{id}/publish
+func (h *Handler) Publish(w http.ResponseWriter, r *http.Request) {
+	wineryID := auth.WineryIDFromContext(r.Context())
+
+	lotID, err := uuid.Parse(chi.URLParam(r, "id"))
+	if err != nil {
+		response.Err(w, http.StatusBadRequest, "INVALID_ID", "ID de lote inválido")
+		return
+	}
+
+	result, err := h.svc.Publish(r.Context(), lotID, wineryID, h.cfg.QRBaseURL)
+	if err != nil {
+		if errors.Is(err, ErrNotFound) {
+			response.Err(w, http.StatusNotFound, "LOT_NOT_FOUND", "lote no encontrado")
+			return
+		}
+		response.Err(w, http.StatusInternalServerError, "INTERNAL_ERROR", "error al publicar lote")
+		return
+	}
+
+	response.OK(w, http.StatusOK, result)
 }
 
 // Delete godoc

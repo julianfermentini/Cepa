@@ -31,6 +31,9 @@ export default function LotDetail() {
   const navigate = useNavigate()
   const [lot, setLot] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [publishing, setPublishing] = useState(false)
+  const [consumerURL, setConsumerURL] = useState(null)
+  const [copied, setCopied] = useState(false)
 
   useEffect(() => {
     api.lots.get(id)
@@ -47,6 +50,25 @@ export default function LotDetail() {
     } catch (err) {
       alert(err.message)
     }
+  }
+
+  async function handlePublish() {
+    setPublishing(true)
+    try {
+      const result = await api.lots.publish(lot.id)
+      setConsumerURL(result.consumer_url)
+      setLot(prev => ({ ...prev, status: 'active' }))
+    } catch (err) {
+      alert(err.message)
+    } finally {
+      setPublishing(false)
+    }
+  }
+
+  function handleCopy() {
+    navigator.clipboard.writeText(consumerURL)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
   }
 
   if (loading) {
@@ -96,6 +118,15 @@ export default function LotDetail() {
                 )}
               </div>
               <div className="flex gap-2 shrink-0">
+                {lot.status !== 'active' && (
+                  <button
+                    onClick={handlePublish}
+                    disabled={publishing}
+                    className="btn-gold text-xs px-3 py-2"
+                  >
+                    {publishing ? 'Publicando...' : '🚀 Publicar'}
+                  </button>
+                )}
                 <Link to={`/lots/${lot.id}/edit`} className="btn-secondary text-xs px-3 py-2">
                   Editar
                 </Link>
@@ -132,6 +163,44 @@ export default function LotDetail() {
             )}
           </div>
         </div>
+
+        {/* Panel link consumidor — aparece al publicar */}
+        {consumerURL && (
+          <div className="mb-6 bg-emerald-50 border border-emerald-200 rounded-2xl p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-lg">🎉</span>
+              <p className="font-semibold text-emerald-800">¡Lote publicado!</p>
+            </div>
+            <p className="text-emerald-700 text-sm mb-3">
+              Compartí este link o usalo en el QR de tu etiqueta:
+            </p>
+            <div className="flex gap-2">
+              <code className="flex-1 bg-white border border-emerald-200 rounded-lg px-3 py-2 text-sm text-emerald-900 truncate">
+                {consumerURL}
+              </code>
+              <button onClick={handleCopy} className="btn-primary text-xs px-4 shrink-0">
+                {copied ? '✓ Copiado' : 'Copiar'}
+              </button>
+              <a href={consumerURL} target="_blank" rel="noreferrer" className="btn-secondary text-xs px-4 shrink-0">
+                Ver →
+              </a>
+            </div>
+          </div>
+        )}
+
+        {/* Si ya estaba publicado, mostrar link directo */}
+        {lot.status === 'active' && !consumerURL && (
+          <div className="mb-6 bg-blue-50 border border-blue-200 rounded-2xl p-4 flex items-center justify-between gap-4">
+            <p className="text-blue-700 text-sm">Este lote ya está publicado y tiene QR activo.</p>
+            <button
+              onClick={handlePublish}
+              disabled={publishing}
+              className="btn-primary text-xs px-4 shrink-0"
+            >
+              {publishing ? 'Obteniendo...' : 'Ver link →'}
+            </button>
+          </div>
+        )}
 
         {/* Detail cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">

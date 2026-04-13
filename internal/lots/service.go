@@ -2,8 +2,10 @@ package lots
 
 import (
 	"context"
+	"crypto/rand"
 	"errors"
 	"fmt"
+	"math/big"
 	"time"
 
 	"github.com/google/uuid"
@@ -99,6 +101,57 @@ func (s *Service) Update(ctx context.Context, id, wineryID uuid.UUID, req Update
 		return nil, fmt.Errorf("lots.service: %w", err)
 	}
 	return lot, nil
+}
+
+// Publish publica un lote: cambia estado a "active" y genera (o reutiliza) su QR.
+func (s *Service) Publish(ctx context.Context, id, wineryID uuid.UUID, baseURL string) (*PublishResult, error) {
+	lot, err := s.repo.FindByID(ctx, id, wineryID)
+	if err != nil {
+		return nil, fmt.Errorf("lots.service: %w", err)
+	}
+	if lot == nil {
+		return nil, ErrNotFound
+	}
+
+	// Reutilizar QR si ya existe
+	qr, err := s.repo.FindQRByLotID(ctx, id)
+	if err != nil {
+		return nil, fmt.Errorf("lots.service: %w", err)
+	}
+	if qr == nil {
+		shortCode, err := generateShortCode()
+		if err != nil {
+			return nil, fmt.Errorf("lots.service: generar código: %w", err)
+		}
+		consumerURL := baseURL + "/" + shortCode
+		qr, err = s.repo.CreateQR(ctx, id, shortCode, consumerURL)
+		if err != nil {
+			return nil, fmt.Errorf("lots.service: %w", err)
+		}
+	}
+
+	if err := s.repo.UpdateStatus(ctx, id, wineryID, "active"); err != nil {
+		return nil, fmt.Errorf("lots.service: %w", err)
+	}
+
+	return &PublishResult{
+		ShortCode:   qr.ShortCode,
+		ConsumerURL: qr.TargetURL,
+		LotID:       id.String(),
+	}, nil
+}
+
+func generateShortCode() (string, error) {
+	const chars = "abcdefghijklmnopqrstuvwxyz0123456789"
+	result := make([]byte, 7)
+	for i := range result {
+		n, err := rand.Int(rand.Reader, big.NewInt(int64(len(chars))))
+		if err != nil {
+			return "", err
+		}
+		result[i] = chars[n.Int64()]
+	}
+	return string(result), nil
 }
 
 // Delete hace soft delete de un lote verificando que pertenezca a la bodega.

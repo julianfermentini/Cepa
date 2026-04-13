@@ -36,6 +36,14 @@ export const api = {
     refresh: (token) =>
       request('/auth/refresh', { method: 'POST', body: JSON.stringify({ token }) }),
   },
+  public: {
+    getLot: (shortCode) => request(`/public/lots/${shortCode}`, { headers: { Authorization: undefined } }),
+  },
+  analytics: {
+    overview: () => request('/analytics/overview'),
+    topLots: () => request('/analytics/lots/top'),
+    countries: () => request('/analytics/countries'),
+  },
   lots: {
     list: (params = {}) => {
       const qs = new URLSearchParams(
@@ -49,5 +57,6 @@ export const api = {
     update: (id, body) =>
       request(`/lots/${id}`, { method: 'PUT', body: JSON.stringify(body) }),
     delete: (id) => request(`/lots/${id}`, { method: 'DELETE' }),
+    publish: (id) => request(`/lots/${id}/publish`, { method: 'POST' }),
   },
 }

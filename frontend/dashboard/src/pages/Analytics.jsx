@@ -1,0 +1,172 @@
+import { useEffect, useState } from 'react'
+import Layout from '../components/Layout'
+import { api } from '../api/client'
+
+function StatCard({ label, value, icon, sub }) {
+  return (
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+      <div className="flex items-start justify-between mb-3">
+        <span className="text-2xl">{icon}</span>
+      </div>
+      <p className="text-3xl font-serif font-semibold text-gray-900 tabular-nums">{value ?? '–'}</p>
+      <p className="text-sm font-medium text-gray-500 mt-1">{label}</p>
+      {sub && <p className="text-xs text-gray-400 mt-0.5">{sub}</p>}
+    </div>
+  )
+}
+
+function Section({ title, icon, children }) {
+  return (
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+      <div className="px-6 py-4 border-b border-gray-50 bg-gray-50/50 flex items-center gap-2">
+        <span className="text-base">{icon}</span>
+        <h3 className="font-serif text-base font-semibold text-gray-800">{title}</h3>
+      </div>
+      <div className="p-6">{children}</div>
+    </div>
+  )
+}
+
+export default function Analytics() {
+  const [overview, setOverview] = useState(null)
+  const [topLots, setTopLots] = useState([])
+  const [countries, setCountries] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    Promise.all([
+      api.analytics.overview(),
+      api.analytics.topLots(),
+      api.analytics.countries(),
+    ])
+      .then(([ov, lots, ctrs]) => {
+        setOverview(ov)
+        setTopLots(lots)
+        setCountries(ctrs)
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false))
+  }, [])
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center h-64 gap-3 text-gray-400">
+          <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+          </svg>
+          Cargando analytics...
+        </div>
+      </Layout>
+    )
+  }
+
+  const maxScans = topLots[0]?.scan_count || 1
+  const maxCountry = countries[0]?.scan_count || 1
+
+  return (
+    <Layout>
+      <div className="px-10 py-10 max-w-4xl">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-2xl font-serif font-semibold text-gray-900">Analytics</h1>
+          <p className="text-sm text-gray-500 mt-1">Escaneos de QR de tus lotes publicados</p>
+        </div>
+
+        {/* Stat cards */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <StatCard
+            icon="📡"
+            label="Total escaneos"
+            value={overview?.total_scans?.toLocaleString('es-AR')}
+          />
+          <StatCard
+            icon="🍷"
+            label="Lotes escaneados"
+            value={overview?.lots_scanned?.toLocaleString('es-AR')}
+          />
+          <StatCard
+            icon="🌍"
+            label="Países"
+            value={overview?.countries?.toLocaleString('es-AR')}
+          />
+          <StatCard
+            icon="📈"
+            label="Últimos 30 días"
+            value={overview?.scans_last_30d?.toLocaleString('es-AR')}
+            sub="escaneos recientes"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Top lotes */}
+          <Section title="Top lotes por escaneos" icon="🏆">
+            {topLots.length === 0 ? (
+              <p className="text-sm text-gray-400 text-center py-4">
+                Sin datos aún. Publicá un lote y compartí el QR.
+              </p>
+            ) : (
+              <div className="space-y-4">
+                {topLots.map((lot, i) => (
+                  <div key={lot.lot_id}>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="text-xs font-mono text-gray-400 w-4 shrink-0">{i + 1}</span>
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium text-gray-900 truncate">{lot.name}</p>
+                          {lot.variety && (
+                            <p className="text-xs text-gray-400">{lot.variety}</p>
+                          )}
+                        </div>
+                      </div>
+                      <span className="text-sm font-semibold text-gray-700 ml-3 shrink-0 tabular-nums">
+                        {lot.scan_count.toLocaleString('es-AR')}
+                      </span>
+                    </div>
+                    <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-wine-700 rounded-full transition-all duration-500"
+                        style={{ width: `${(lot.scan_count / maxScans) * 100}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </Section>
+
+          {/* Países */}
+          <Section title="Escaneos por país" icon="🌍">
+            {countries.length === 0 ? (
+              <p className="text-sm text-gray-400 text-center py-4">
+                Sin datos de origen aún.
+              </p>
+            ) : (
+              <div className="space-y-3">
+                {countries.map((c) => (
+                  <div key={c.country_code}>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-sm text-gray-700 font-medium">
+                        {c.country_code}
+                      </span>
+                      <span className="text-xs font-semibold text-gray-500 tabular-nums">
+                        {c.scan_count.toLocaleString('es-AR')}
+                      </span>
+                    </div>
+                    <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-gold-500 rounded-full transition-all duration-500"
+                        style={{ width: `${(c.scan_count / maxCountry) * 100}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </Section>
+        </div>
+      </div>
+    </Layout>
+  )
+}
