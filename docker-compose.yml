@@ -7,7 +7,7 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: cepa_dev
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -47,6 +47,23 @@ services:
       timeout: 5s
       retries: 5
 
+  migrate:
+    image: postgres:16-alpine
+    container_name: cepa_migrate
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PGPASSWORD: password
+    volumes:
+      - ./migrations:/migrations:ro
+    command: >
+      sh -c "for f in /migrations/*.sql; do
+        echo \"Applying $$f...\";
+        psql -h postgres -U cepa -d cepa_dev -f $$f;
+      done && echo 'Migrations done.'"
+    restart: "no"
+
   api:
     build:
       context: .
@@ -58,6 +75,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
     env_file:
       - .env
     ports:
