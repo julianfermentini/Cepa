@@ -3,6 +3,7 @@ package auth
 import (
 	"encoding/json"
 	"errors"
+	"log/slog"
 	"net/http"
 
 	"github.com/cepa/api/internal/response"
@@ -33,6 +34,7 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 		case errors.Is(err, ErrSlugTaken):
 			response.Err(w, http.StatusConflict, "SLUG_TAKEN", "el slug ya está en uso")
 		default:
+			slog.Error("auth: register failed", "error", err)
 			response.Err(w, http.StatusInternalServerError, "INTERNAL_ERROR", "error interno del servidor")
 		}
 		return
@@ -59,6 +61,7 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 			response.Err(w, http.StatusUnauthorized, "INVALID_CREDENTIALS", "email o contraseña incorrectos")
 			return
 		}
+		slog.Error("auth: login failed", "error", err)
 		response.Err(w, http.StatusInternalServerError, "INTERNAL_ERROR", "error interno del servidor")
 		return
 	}
@@ -81,6 +84,7 @@ func (h *Handler) Refresh(w http.ResponseWriter, r *http.Request) {
 			response.Err(w, http.StatusUnauthorized, "INVALID_TOKEN", "token inválido o expirado")
 			return
 		}
+		slog.Error("auth: refresh failed", "error", err)
 		response.Err(w, http.StatusInternalServerError, "INTERNAL_ERROR", "error interno del servidor")
 		return
 	}

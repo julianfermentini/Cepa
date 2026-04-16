@@ -3,6 +3,7 @@ package lots
 import (
 	"encoding/json"
 	"errors"
+	"log/slog"
 	"net/http"
 	"strconv"
 
@@ -47,6 +48,7 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 
 	lots, err := h.svc.List(r.Context(), wineryID, params)
 	if err != nil {
+		slog.Error("lots: list failed", "error", err, "winery_id", wineryID)
 		response.Err(w, http.StatusInternalServerError, "INTERNAL_ERROR", "error al listar lotes")
 		return
 	}
@@ -79,6 +81,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 			response.Err(w, http.StatusConflict, "LOT_CODE_TAKEN", "ya existe un lote con ese código")
 			return
 		}
+		slog.Error("lots: create failed", "error", err, "winery_id", wineryID)
 		response.Err(w, http.StatusInternalServerError, "INTERNAL_ERROR", "error al crear lote")
 		return
 	}
@@ -103,6 +106,7 @@ func (h *Handler) Get(w http.ResponseWriter, r *http.Request) {
 			response.Err(w, http.StatusNotFound, "LOT_NOT_FOUND", "lote no encontrado")
 			return
 		}
+		slog.Error("lots: get failed", "error", err, "lot_id", lotID, "winery_id", wineryID)
 		response.Err(w, http.StatusInternalServerError, "INTERNAL_ERROR", "error al obtener lote")
 		return
 	}
@@ -133,6 +137,7 @@ func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
 			response.Err(w, http.StatusNotFound, "LOT_NOT_FOUND", "lote no encontrado")
 			return
 		}
+		slog.Error("lots: update failed", "error", err, "lot_id", lotID, "winery_id", wineryID)
 		response.Err(w, http.StatusInternalServerError, "INTERNAL_ERROR", "error al actualizar lote")
 		return
 	}
@@ -157,6 +162,7 @@ func (h *Handler) Publish(w http.ResponseWriter, r *http.Request) {
 			response.Err(w, http.StatusNotFound, "LOT_NOT_FOUND", "lote no encontrado")
 			return
 		}
+		slog.Error("lots: publish failed", "error", err, "lot_id", lotID, "winery_id", wineryID)
 		response.Err(w, http.StatusInternalServerError, "INTERNAL_ERROR", "error al publicar lote")
 		return
 	}
@@ -180,6 +186,7 @@ func (h *Handler) Delete(w http.ResponseWriter, r *http.Request) {
 			response.Err(w, http.StatusNotFound, "LOT_NOT_FOUND", "lote no encontrado")
 			return
 		}
+		slog.Error("lots: delete failed", "error", err, "lot_id", lotID, "winery_id", wineryID)
 		response.Err(w, http.StatusInternalServerError, "INTERNAL_ERROR", "error al eliminar lote")
 		return
 	}

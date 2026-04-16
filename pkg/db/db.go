@@ -3,19 +3,24 @@ package db
 import (
 	"context"
 	"fmt"
+	"strings"
 
-	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-// New crea y verifica un pool de conexiones a PostgreSQL.
 func New(ctx context.Context, databaseURL string) (*pgxpool.Pool, error) {
+	if strings.Contains(databaseURL, "supabase.com") || strings.Contains(databaseURL, "pooler") {
+		sep := "?"
+		if strings.Contains(databaseURL, "?") {
+			sep = "&"
+		}
+		databaseURL += sep + "default_query_exec_mode=simple_protocol"
+	}
+
 	cfg, err := pgxpool.ParseConfig(databaseURL)
 	if err != nil {
 		return nil, fmt.Errorf("db: parsear config: %w", err)
 	}
-
-	cfg.ConnConfig.DefaultQueryExecMode = pgx.QueryExecModeSimpleProtocol
 
 	pool, err := pgxpool.NewWithConfig(ctx, cfg)
 	if err != nil {
