@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -13,6 +14,8 @@ func New(ctx context.Context, databaseURL string) (*pgxpool.Pool, error) {
 	if err != nil {
 		return nil, fmt.Errorf("db: parsear config: %w", err)
 	}
+
+	cfg.ConnConfig.DefaultQueryExecMode = pgx.QueryExecModeExec
 
 	pool, err := pgxpool.NewWithConfig(ctx, cfg)
 	if err != nil {
