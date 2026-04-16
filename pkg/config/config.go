@@ -29,7 +29,7 @@ func Load() (*Config, error) {
 
 	cfg := &Config{
 		DatabaseURL:  requireEnv("DATABASE_URL"),
-		RedisURL:     requireEnv("REDIS_URL"),
+		RedisURL:     getEnv("REDIS_URL", ""),
 		JWTSecret:    requireEnv("JWT_SECRET"),
 		S3Endpoint:   getEnv("S3_ENDPOINT", "http://localhost:9000"),
 		S3Bucket:     getEnv("S3_BUCKET", "cepa-dev"),

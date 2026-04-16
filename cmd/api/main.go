@@ -42,13 +42,17 @@ func main() {
 	defer pool.Close()
 	slog.Info("PostgreSQL conectado")
 
-	redisClient, err := cache.New(ctx, cfg.RedisURL)
-	if err != nil {
-		slog.Error("conectar a Redis", "error", err)
-		os.Exit(1)
+	if cfg.RedisURL != "" {
+		redisClient, err := cache.New(ctx, cfg.RedisURL)
+		if err != nil {
+			slog.Warn("Redis no disponible, continuando sin cache", "error", err)
+		} else {
+			defer redisClient.Close()
+			slog.Info("Redis conectado")
+		}
+	} else {
+		slog.Info("Redis no configurado, continuando sin cache")
 	}
-	defer redisClient.Close()
-	slog.Info("Redis conectado")
 
 	r := chi.NewRouter()
 
