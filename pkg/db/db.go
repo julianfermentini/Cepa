@@ -15,7 +15,7 @@ func New(ctx context.Context, databaseURL string) (*pgxpool.Pool, error) {
 		return nil, fmt.Errorf("db: parsear config: %w", err)
 	}
 
-	cfg.ConnConfig.DefaultQueryExecMode = pgx.QueryExecModeExec
+	cfg.ConnConfig.DefaultQueryExecMode = pgx.QueryExecModeSimpleProtocol
 
 	pool, err := pgxpool.NewWithConfig(ctx, cfg)
 	if err != nil {
