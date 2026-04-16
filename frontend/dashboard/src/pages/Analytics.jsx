@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 import Layout from '../components/Layout'
 import { api } from '../api/client'
+import { Radio, Wine, Globe, TrendingUp, Trophy, Loader2 } from 'lucide-react'
 
-function StatCard({ label, value, icon, sub }) {
+function StatCard({ label, value, Icon, iconColor, sub }) {
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
       <div className="flex items-start justify-between mb-3">
-        <span className="text-2xl">{icon}</span>
+        <Icon className={`w-6 h-6 ${iconColor}`} strokeWidth={1.75} />
       </div>
       <p className="text-3xl font-serif font-semibold text-gray-900 tabular-nums">{value ?? '–'}</p>
       <p className="text-sm font-medium text-gray-500 mt-1">{label}</p>
@@ -15,11 +16,11 @@ function StatCard({ label, value, icon, sub }) {
   )
 }
 
-function Section({ title, icon, children }) {
+function Section({ title, Icon, iconColor, children }) {
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
       <div className="px-6 py-4 border-b border-gray-50 bg-gray-50/50 flex items-center gap-2">
-        <span className="text-base">{icon}</span>
+        <Icon className={`w-4 h-4 ${iconColor}`} strokeWidth={1.75} />
         <h3 className="font-serif text-base font-semibold text-gray-800">{title}</h3>
       </div>
       <div className="p-6">{children}</div>
@@ -52,10 +53,7 @@ export default function Analytics() {
     return (
       <Layout>
         <div className="flex items-center justify-center h-64 gap-3 text-gray-400">
-          <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-          </svg>
+          <Loader2 className="w-5 h-5 animate-spin" />
           Cargando analytics...
         </div>
       </Layout>
@@ -76,32 +74,15 @@ export default function Analytics() {
 
         {/* Stat cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <StatCard
-            icon="📡"
-            label="Total escaneos"
-            value={overview?.total_scans?.toLocaleString('es-AR')}
-          />
-          <StatCard
-            icon="🍷"
-            label="Lotes escaneados"
-            value={overview?.lots_scanned?.toLocaleString('es-AR')}
-          />
-          <StatCard
-            icon="🌍"
-            label="Países"
-            value={overview?.countries?.toLocaleString('es-AR')}
-          />
-          <StatCard
-            icon="📈"
-            label="Últimos 30 días"
-            value={overview?.scans_last_30d?.toLocaleString('es-AR')}
-            sub="escaneos recientes"
-          />
+          <StatCard Icon={Radio}       iconColor="text-wine-700"    label="Total escaneos"     value={overview?.total_scans?.toLocaleString('es-AR')} />
+          <StatCard Icon={Wine}        iconColor="text-wine-700"    label="Lotes escaneados"   value={overview?.lots_scanned?.toLocaleString('es-AR')} />
+          <StatCard Icon={Globe}       iconColor="text-emerald-600" label="Países"             value={overview?.countries?.toLocaleString('es-AR')} />
+          <StatCard Icon={TrendingUp}  iconColor="text-gold-600"    label="Últimos 30 días"    value={overview?.scans_last_30d?.toLocaleString('es-AR')} sub="escaneos recientes" />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Top lotes */}
-          <Section title="Top lotes por escaneos" icon="🏆">
+          <Section title="Top lotes por escaneos" Icon={Trophy} iconColor="text-gold-600">
             {topLots.length === 0 ? (
               <p className="text-sm text-gray-400 text-center py-4">
                 Sin datos aún. Publicá un lote y compartí el QR.
@@ -137,7 +118,7 @@ export default function Analytics() {
           </Section>
 
           {/* Países */}
-          <Section title="Escaneos por país" icon="🌍">
+          <Section title="Escaneos por país" Icon={Globe} iconColor="text-emerald-600">
             {countries.length === 0 ? (
               <p className="text-sm text-gray-400 text-center py-4">
                 Sin datos de origen aún.

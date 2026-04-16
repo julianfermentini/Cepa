@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { api } from '../api/client'
 import Layout from '../components/Layout'
 import StatusBadge from '../components/StatusBadge'
+import { Wine, Loader2, Send, Leaf, FlaskConical, UserCircle2, PartyPopper, Check, Download, ExternalLink } from 'lucide-react'
 
 function DataRow({ label, value }) {
   if (value == null || value === '') return null
@@ -14,11 +15,11 @@ function DataRow({ label, value }) {
   )
 }
 
-function Card({ title, children, icon }) {
+function Card({ title, children, Icon, iconColor }) {
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
       <div className="px-6 py-4 border-b border-gray-50 bg-gray-50/50 flex items-center gap-2">
-        {icon && <span className="text-base">{icon}</span>}
+        {Icon && <Icon className={`w-4 h-4 ${iconColor || 'text-gray-500'}`} strokeWidth={1.75} />}
         <h3 className="font-serif text-base font-semibold text-gray-800">{title}</h3>
       </div>
       <div className="px-6 py-2">{children}</div>
@@ -75,10 +76,7 @@ export default function LotDetail() {
     return (
       <Layout>
         <div className="flex items-center justify-center h-64 gap-3 text-gray-400">
-          <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-          </svg>
+          <Loader2 className="w-5 h-5 animate-spin" />
           Cargando...
         </div>
       </Layout>
@@ -99,8 +97,7 @@ export default function LotDetail() {
 
         {/* Header */}
         <div className="bg-gradient-to-br from-wine-900 to-wine-950 rounded-2xl p-8 mb-6 relative overflow-hidden">
-          {/* Decoración de fondo */}
-          <div className="absolute right-6 top-1/2 -translate-y-1/2 text-9xl opacity-10 select-none">🍷</div>
+          <Wine className="absolute right-8 top-1/2 -translate-y-1/2 w-40 h-40 text-white/[0.07] select-none" strokeWidth={1} />
           <div className="relative z-10">
             <div className="flex items-start justify-between gap-4">
               <div>
@@ -122,9 +119,13 @@ export default function LotDetail() {
                   <button
                     onClick={handlePublish}
                     disabled={publishing}
-                    className="btn-gold text-xs px-3 py-2"
+                    className="btn-gold text-xs px-3 py-2 inline-flex items-center gap-1.5"
                   >
-                    {publishing ? 'Publicando...' : '🚀 Publicar'}
+                    {publishing ? (
+                      <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Publicando...</>
+                    ) : (
+                      <><Send className="w-3.5 h-3.5" strokeWidth={2} /> Publicar</>
+                    )}
                   </button>
                 )}
                 <Link to={`/lots/${lot.id}/edit`} className="btn-secondary text-xs px-3 py-2">
@@ -168,22 +169,40 @@ export default function LotDetail() {
         {consumerURL && (
           <div className="mb-6 bg-emerald-50 border border-emerald-200 rounded-2xl p-5">
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-lg">🎉</span>
+              <PartyPopper className="w-5 h-5 text-emerald-700" strokeWidth={1.75} />
               <p className="font-semibold text-emerald-800">¡Lote publicado!</p>
             </div>
-            <p className="text-emerald-700 text-sm mb-3">
-              Compartí este link o usalo en el QR de tu etiqueta:
+            <p className="text-emerald-700 text-sm mb-4">
+              Este es el QR único de tu lote. Descargalo e imprímilo en tu etiqueta:
             </p>
-            <div className="flex gap-2">
-              <code className="flex-1 bg-white border border-emerald-200 rounded-lg px-3 py-2 text-sm text-emerald-900 truncate">
-                {consumerURL}
-              </code>
-              <button onClick={handleCopy} className="btn-primary text-xs px-4 shrink-0">
-                {copied ? '✓ Copiado' : 'Copiar'}
-              </button>
-              <a href={consumerURL} target="_blank" rel="noreferrer" className="btn-secondary text-xs px-4 shrink-0">
-                Ver →
-              </a>
+            <div className="flex flex-col sm:flex-row gap-4 items-center mb-4">
+              <img
+                src={`https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=12&data=${encodeURIComponent(consumerURL)}`}
+                alt="QR del lote"
+                className="w-48 h-48 bg-white rounded-xl border border-emerald-200 p-2 shrink-0"
+              />
+              <div className="flex-1 w-full space-y-2">
+                <code className="block bg-white border border-emerald-200 rounded-lg px-3 py-2 text-sm text-emerald-900 break-all">
+                  {consumerURL}
+                </code>
+                <div className="flex gap-2">
+                  <button onClick={handleCopy} className="btn-primary text-xs px-4 flex-1 inline-flex items-center justify-center gap-1.5">
+                    {copied ? <><Check className="w-3.5 h-3.5" strokeWidth={2.5} /> Copiado</> : 'Copiar link'}
+                  </button>
+                  <a href={consumerURL} target="_blank" rel="noreferrer" className="btn-secondary text-xs px-4 flex-1 text-center inline-flex items-center justify-center gap-1.5">
+                    <ExternalLink className="w-3.5 h-3.5" strokeWidth={2} /> Ver
+                  </a>
+                  <a
+                    href={`https://api.qrserver.com/v1/create-qr-code/?size=600x600&margin=20&format=png&data=${encodeURIComponent(consumerURL)}`}
+                    download={`qr-${lot.lot_code || lot.id}.png`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="btn-gold text-xs px-4 flex-1 text-center inline-flex items-center justify-center gap-1.5"
+                  >
+                    <Download className="w-3.5 h-3.5" strokeWidth={2} /> Descargar QR
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -204,14 +223,14 @@ export default function LotDetail() {
 
         {/* Detail cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <Card title="Cosecha" icon="🌿">
+          <Card title="Cosecha" Icon={Leaf} iconColor="text-emerald-600">
             <DataRow label="Kg cosechados" value={lot.harvest_kg && `${lot.harvest_kg.toLocaleString('es-AR')} kg`} />
             <DataRow label="Brix al corte" value={lot.brix_at_harvest && `${lot.brix_at_harvest}°Bx`} />
             <DataRow label="pH al corte" value={lot.ph_at_harvest} />
             <DataRow label="Fecha de cosecha" value={lot.harvest_date && new Date(lot.harvest_date).toLocaleDateString('es-AR')} />
           </Card>
 
-          <Card title="Elaboración" icon="🪨">
+          <Card title="Elaboración" Icon={FlaskConical} iconColor="text-wine-700">
             <DataRow label="Fermentación" value={lot.fermentation_days && `${lot.fermentation_days} días`} />
             <DataRow label="Barrica" value={lot.barrel_type} />
             <DataRow label="Tiempo en barrica" value={lot.barrel_months && `${lot.barrel_months} meses`} />
@@ -221,7 +240,7 @@ export default function LotDetail() {
 
         {/* Enólogo */}
         {(lot.winemaker_name || lot.winemaker_note) && (
-          <Card title="Enólogo" icon="👨‍🍳">
+          <Card title="Enólogo" Icon={UserCircle2} iconColor="text-gold-600">
             {lot.winemaker_name && (
               <div className="py-3 border-b border-gray-50">
                 <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Nombre</p>

@@ -4,10 +4,23 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        serif: ['"Playfair Display"', 'Georgia', 'serif'],
-        sans:  ['Inter', 'system-ui', 'sans-serif'],
+        serif:   ['"Playfair Display"', 'Georgia', 'serif'],
+        sans:    ['Inter', 'system-ui', 'sans-serif'],
+        grotesk: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
+        jakarta: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
       },
       colors: {
+        cepa: {
+          primary:        '#8E24AC',
+          'primary-light':'#CE93D8',
+          'primary-dark': '#6A1B9A',
+          secondary:      '#4CAF50',
+          'secondary-light':'#A5D6A7',
+          tertiary:       '#FFD700',
+          'tertiary-light':'#FFF176',
+          neutral:        '#F5EFE6',
+          'neutral-dark': '#E8DDD0',
+        },
         wine: {
           50:  '#fdf2f3',
           100: '#fce7e9',

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { api } from '../api/client'
 import Layout from '../components/Layout'
 import StatusBadge from '../components/StatusBadge'
+import { Plus, Pencil, Trash2, Loader2, Wine } from 'lucide-react'
 
 const FILTERS = [
   { value: '',         label: 'Todos' },
@@ -50,10 +51,8 @@ export default function Lots() {
             <h1 className="text-3xl font-serif font-semibold text-gray-900">Lotes</h1>
             <p className="text-gray-500 text-sm mt-1">Gestioná cada lote de producción</p>
           </div>
-          <Link to="/lots/new" className="btn-primary">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
+          <Link to="/lots/new" className="btn-primary inline-flex items-center gap-2">
+            <Plus className="w-4 h-4" strokeWidth={2} />
             Nuevo lote
           </Link>
         </div>
@@ -82,22 +81,22 @@ export default function Lots() {
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
           {loading ? (
             <div className="flex items-center justify-center py-20 gap-3 text-gray-400">
-              <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-              </svg>
+              <Loader2 className="w-5 h-5 animate-spin" />
               Cargando...
             </div>
           ) : lots.length === 0 ? (
             <div className="text-center py-20 px-8">
               <div className="w-16 h-16 bg-wine-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <span className="text-3xl">🍾</span>
+                <Wine className="w-8 h-8 text-wine-700" strokeWidth={1.5} />
               </div>
               <h3 className="font-serif text-lg font-semibold text-gray-900 mb-2">
                 {filter ? 'Sin lotes con ese estado' : 'Todavía no hay lotes'}
               </h3>
               {!filter && (
-                <Link to="/lots/new" className="btn-primary mt-4">Crear el primero</Link>
+                <Link to="/lots/new" className="btn-primary mt-4 inline-flex items-center gap-2">
+                  <Plus className="w-4 h-4" strokeWidth={2} />
+                  Crear el primero
+                </Link>
               )}
             </div>
           ) : (
@@ -136,10 +135,7 @@ export default function Lots() {
                           className="p-2 text-gray-400 hover:text-wine-700 hover:bg-wine-50 rounded-lg transition-colors"
                           title="Editar"
                         >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75}
-                              d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                          </svg>
+                          <Pencil className="w-4 h-4" strokeWidth={1.75} />
                         </button>
                         <button
                           onClick={() => handleDelete(lot)}
@@ -147,10 +143,7 @@ export default function Lots() {
                           className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                           title="Eliminar"
                         >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75}
-                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                          </svg>
+                          <Trash2 className="w-4 h-4" strokeWidth={1.75} />
                         </button>
                       </div>
                     </td>

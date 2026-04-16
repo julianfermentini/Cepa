@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { Wine, Loader2, AlertCircle } from 'lucide-react'
 
 export default function Login() {
   const { login } = useAuth()
@@ -38,7 +39,7 @@ export default function Login() {
         <div className="relative z-10 flex flex-col justify-between p-12 w-full">
           {/* Logo */}
           <div className="flex items-center gap-3">
-            <span className="text-3xl">🍷</span>
+            <Wine className="w-8 h-8 text-gold-400" strokeWidth={1.5} />
             <span className="text-white text-2xl font-serif font-semibold tracking-wide">Cepa</span>
           </div>
 
@@ -79,7 +80,7 @@ export default function Login() {
         <div className="w-full max-w-md">
           {/* Mobile logo */}
           <div className="flex items-center gap-2 mb-10 lg:hidden">
-            <span className="text-2xl">🍷</span>
+            <Wine className="w-7 h-7 text-wine-800" strokeWidth={1.5} />
             <span className="text-wine-900 text-xl font-serif font-semibold">Cepa</span>
           </div>
 
@@ -115,20 +116,15 @@ export default function Login() {
 
             {error && (
               <div className="flex items-center gap-3 bg-red-50 border border-red-100 text-red-700 px-4 py-3 rounded-xl text-sm">
-                <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                </svg>
+                <AlertCircle className="w-4 h-4 shrink-0" strokeWidth={2} />
                 {error}
               </div>
             )}
 
-            <button type="submit" className="btn-primary w-full py-3 text-base" disabled={loading}>
+            <button type="submit" className="btn-primary w-full py-3 text-base inline-flex items-center justify-center gap-2" disabled={loading}>
               {loading ? (
                 <>
-                  <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                  </svg>
+                  <Loader2 className="w-4 h-4 animate-spin" />
                   Ingresando...
                 </>
               ) : 'Ingresar'}

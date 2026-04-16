@@ -2,11 +2,13 @@ package lots
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -43,6 +45,10 @@ func (r *Repository) Create(ctx context.Context, lot *Lot) error {
 		lot.LotCode, lot.Status, lot.CreatedAt,
 	)
 	if err != nil {
+		var pgErr *pgconn.PgError
+		if errors.As(err, &pgErr) && pgErr.Code == "23505" {
+			return ErrLotCodeTaken
+		}
 		return fmt.Errorf("lots.repository: crear lote: %w", err)
 	}
 	return nil

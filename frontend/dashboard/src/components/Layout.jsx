@@ -1,37 +1,11 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { LayoutDashboard, Boxes, LineChart, LogOut, Wine, ArrowUpRight } from 'lucide-react'
 
 const navItems = [
-  {
-    to: '/',
-    label: 'Dashboard',
-    icon: (
-      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75}
-          d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-      </svg>
-    ),
-  },
-  {
-    to: '/lots',
-    label: 'Lotes',
-    icon: (
-      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75}
-          d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-      </svg>
-    ),
-  },
-  {
-    to: '/analytics',
-    label: 'Analytics',
-    icon: (
-      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75}
-          d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-      </svg>
-    ),
-  },
+  { to: '/',          label: 'Dashboard', Icon: LayoutDashboard },
+  { to: '/lots',      label: 'Lotes',     Icon: Boxes },
+  { to: '/analytics', label: 'Analytics', Icon: LineChart },
 ]
 
 export default function Layout({ children }) {
@@ -53,10 +27,9 @@ export default function Layout({ children }) {
         {/* Logo */}
         <div className="px-5 pt-6 pb-5">
           <div className="flex items-center gap-2.5">
-            <span className="text-xl">🍷</span>
+            <Wine className="w-6 h-6 text-gold-400" strokeWidth={1.75} />
             <span className="text-white font-serif text-xl font-semibold tracking-wide">Cepa</span>
           </div>
-          {/* Línea dorada decorativa */}
           <div className="mt-4 h-px bg-gradient-to-r from-gold-400/60 via-gold-400/20 to-transparent" />
         </div>
 
@@ -76,11 +49,11 @@ export default function Layout({ children }) {
         {/* Nav */}
         <nav className="flex-1 px-3 space-y-0.5">
           <p className="text-wine-500 text-xs font-semibold uppercase tracking-widest px-3 mb-2">Menú</p>
-          {navItems.map((item) => (
+          {navItems.map(({ to, label, Icon }) => (
             <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.to === '/'}
+              key={to}
+              to={to}
+              end={to === '/'}
               className={({ isActive }) =>
                 `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 ${
                   isActive
@@ -91,12 +64,10 @@ export default function Layout({ children }) {
             >
               {({ isActive }) => (
                 <>
-                  <span className={isActive ? 'text-gold-400' : ''}>{item.icon}</span>
-                  {item.label}
-                  {item.to === '/lots' && (
-                    <span className={`ml-auto text-xs px-1.5 py-0.5 rounded-md ${isActive ? 'bg-white/20 text-white' : 'bg-white/5 text-wine-400'}`}>
-                      ↗
-                    </span>
+                  <Icon className={`w-4 h-4 ${isActive ? 'text-gold-400' : ''}`} strokeWidth={1.75} />
+                  {label}
+                  {to === '/lots' && (
+                    <ArrowUpRight className={`ml-auto w-3.5 h-3.5 ${isActive ? 'text-white/70' : 'text-wine-500'}`} strokeWidth={2} />
                   )}
                 </>
               )}
@@ -110,10 +81,7 @@ export default function Layout({ children }) {
             onClick={handleLogout}
             className="flex items-center gap-3 w-full px-3 py-2.5 text-wine-400 hover:text-white hover:bg-white/5 rounded-xl text-sm font-medium transition-all duration-150"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75}
-                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-            </svg>
+            <LogOut className="w-4 h-4" strokeWidth={1.75} />
             Cerrar sesión
           </button>
         </div>

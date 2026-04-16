@@ -12,8 +12,9 @@ import (
 )
 
 var (
-	ErrNotFound    = errors.New("lote no encontrado")
-	ErrInvalidData = errors.New("datos inválidos")
+	ErrNotFound       = errors.New("lote no encontrado")
+	ErrInvalidData    = errors.New("datos inválidos")
+	ErrLotCodeTaken   = errors.New("el código de lote ya existe")
 )
 
 type Service struct {
@@ -28,6 +29,11 @@ func NewService(repo *Repository) *Service {
 func (s *Service) Create(ctx context.Context, wineryID uuid.UUID, req CreateLotRequest) (*Lot, error) {
 	if req.Name == "" {
 		return nil, fmt.Errorf("lots.service: %w: nombre requerido", ErrInvalidData)
+	}
+
+	// Normalizar lot_code vacío → nil para no chocar con UNIQUE
+	if req.LotCode != nil && *req.LotCode == "" {
+		req.LotCode = nil
 	}
 
 	lot := &Lot{

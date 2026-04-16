@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams, Link } from 'react-router-dom'
 import { api } from '../api/client'
 import Layout from '../components/Layout'
+import { Loader2, AlertCircle } from 'lucide-react'
 
 const STATUSES = [
   { value: 'draft',    label: 'Borrador' },
@@ -98,10 +99,7 @@ export default function LotForm() {
     return (
       <Layout>
         <div className="flex items-center justify-center h-64 gap-3 text-gray-400">
-          <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-          </svg>
+          <Loader2 className="w-5 h-5 animate-spin" />
           Cargando...
         </div>
       </Layout>
@@ -203,21 +201,16 @@ export default function LotForm() {
 
           {error && (
             <div className="flex items-center gap-3 bg-red-50 border border-red-100 text-red-700 px-4 py-3 rounded-xl text-sm">
-              <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-              </svg>
+              <AlertCircle className="w-4 h-4 shrink-0" strokeWidth={2} />
               {error}
             </div>
           )}
 
           <div className="flex gap-3 pt-2">
-            <button type="submit" className="btn-primary px-8" disabled={loading}>
+            <button type="submit" className="btn-primary px-8 inline-flex items-center gap-2" disabled={loading}>
               {loading ? (
                 <>
-                  <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                  </svg>
+                  <Loader2 className="w-4 h-4 animate-spin" />
                   Guardando...
                 </>
               ) : isEdit ? 'Guardar cambios' : 'Crear lote'}

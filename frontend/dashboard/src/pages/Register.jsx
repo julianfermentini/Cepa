@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { Wine, Loader2, AlertCircle, LineChart, Smartphone, Sparkles } from 'lucide-react'
 
 export default function Register() {
   const { register } = useAuth()
@@ -42,7 +43,7 @@ export default function Register() {
 
         <div className="relative z-10 flex flex-col justify-between p-12 w-full">
           <div className="flex items-center gap-3">
-            <span className="text-3xl">🍷</span>
+            <Wine className="w-8 h-8 text-gold-400" strokeWidth={1.5} />
             <span className="text-white text-2xl font-serif font-semibold tracking-wide">Cepa</span>
           </div>
 
@@ -56,13 +57,15 @@ export default function Register() {
 
             <div className="mt-10 space-y-4">
               {[
-                { icon: '🔍', text: 'Analytics detallados por lote y país' },
-                { icon: '📱', text: 'QR dinámico para cada etiqueta' },
-                { icon: '✨', text: 'Storytelling generado por IA' },
-              ].map((item) => (
-                <div key={item.text} className="flex items-center gap-3">
-                  <span className="text-xl">{item.icon}</span>
-                  <span className="text-wine-200 text-sm">{item.text}</span>
+                { Icon: LineChart,  text: 'Analytics detallados por lote y país' },
+                { Icon: Smartphone, text: 'QR dinámico para cada etiqueta' },
+                { Icon: Sparkles,   text: 'Storytelling generado por IA' },
+              ].map(({ Icon, text }) => (
+                <div key={text} className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+                    <Icon className="w-4 h-4 text-gold-400" strokeWidth={1.75} />
+                  </div>
+                  <span className="text-wine-200 text-sm">{text}</span>
                 </div>
               ))}
             </div>
@@ -74,7 +77,7 @@ export default function Register() {
       <div className="flex-1 flex items-center justify-center px-8 py-12 bg-stone-50 overflow-y-auto">
         <div className="w-full max-w-md">
           <div className="flex items-center gap-2 mb-10 lg:hidden">
-            <span className="text-2xl">🍷</span>
+            <Wine className="w-7 h-7 text-wine-800" strokeWidth={1.5} />
             <span className="text-wine-900 text-xl font-serif font-semibold">Cepa</span>
           </div>
 
@@ -143,20 +146,15 @@ export default function Register() {
 
             {error && (
               <div className="flex items-center gap-3 bg-red-50 border border-red-100 text-red-700 px-4 py-3 rounded-xl text-sm">
-                <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                </svg>
+                <AlertCircle className="w-4 h-4 shrink-0" strokeWidth={2} />
                 {error}
               </div>
             )}
 
-            <button type="submit" className="btn-primary w-full py-3 text-base" disabled={loading}>
+            <button type="submit" className="btn-primary w-full py-3 text-base inline-flex items-center justify-center gap-2" disabled={loading}>
               {loading ? (
                 <>
-                  <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                  </svg>
+                  <Loader2 className="w-4 h-4 animate-spin" />
                   Creando bodega...
                 </>
               ) : 'Crear bodega'}

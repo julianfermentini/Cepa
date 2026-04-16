@@ -25,10 +25,11 @@ func (r *Repository) FindByShortCode(ctx context.Context, shortCode string) (*Pu
 			l.id, l.winery_id, l.name, l.variety, l.vintage_year, l.lot_code,
 			l.winemaker_name, l.winemaker_note, l.bottle_count,
 			l.barrel_type, l.barrel_months, l.fermentation_days,
-			l.harvest_date, l.harvest_kg, l.brix_at_harvest, l.bottled_at,
+			l.harvest_date, l.harvest_kg, l.brix_at_harvest, l.ph_at_harvest, l.bottled_at,
 			l.created_at,
 			qr.id, qr.short_code,
 			w.name, w.slug, w.logo_url, w.primary_color,
+			v.name, v.location, v.altitude_m, v.soil_type,
 			sp.red_fruit, sp.spices, sp.wood, sp.tannins,
 			sp.acidity, sp.body,
 			sp.service_temp_min, sp.service_temp_max,
@@ -36,6 +37,7 @@ func (r *Repository) FindByShortCode(ctx context.Context, shortCode string) (*Pu
 		FROM qr_codes qr
 		JOIN lots l ON qr.lot_id = l.id
 		JOIN wineries w ON l.winery_id = w.id
+		LEFT JOIN vineyards v ON l.vineyard_id = v.id AND v.deleted_at IS NULL
 		LEFT JOIN lot_sensory_profiles sp ON l.id = sp.lot_id
 		WHERE qr.short_code = $1
 		  AND l.status = 'active'
@@ -48,15 +50,19 @@ func (r *Repository) FindByShortCode(ctx context.Context, shortCode string) (*Pu
 	lot := &PublicLot{}
 	var sp SensoryProfile
 	var hasSensory bool
+	var vName *string
+	var vLocation, vSoilType *string
+	var vAltitude *int
 
 	err := row.Scan(
 		&lot.ID, &lot.WineryID, &lot.Name, &lot.Variety, &lot.VintageYear, &lot.LotCode,
 		&lot.WinemakerName, &lot.WinemakerNote, &lot.BottleCount,
 		&lot.BarrelType, &lot.BarrelMonths, &lot.FermentationDays,
-		&lot.HarvestDate, &lot.HarvestKg, &lot.BrixAtHarvest, &lot.BottledAt,
+		&lot.HarvestDate, &lot.HarvestKg, &lot.BrixAtHarvest, &lot.PhAtHarvest, &lot.BottledAt,
 		&lot.CreatedAt,
 		&lot.QRCodeID, &lot.ShortCode,
 		&lot.Winery.Name, &lot.Winery.Slug, &lot.Winery.LogoURL, &lot.Winery.PrimaryColor,
+		&vName, &vLocation, &vAltitude, &vSoilType,
 		&sp.RedFruit, &sp.Spices, &sp.Wood, &sp.Tannins,
 		&sp.Acidity, &sp.Body,
 		&sp.TempMin, &sp.TempMax,
@@ -67,6 +73,15 @@ func (r *Repository) FindByShortCode(ctx context.Context, shortCode string) (*Pu
 			return nil, nil
 		}
 		return nil, fmt.Errorf("experience.repository: buscar lote: %w", err)
+	}
+
+	if vName != nil {
+		lot.Vineyard = &VineyardPublic{
+			Name:      *vName,
+			Location:  vLocation,
+			AltitudeM: vAltitude,
+			SoilType:  vSoilType,
+		}
 	}
 
 	if sp.RedFruit != nil || sp.Body != nil || sp.Tannins != nil {

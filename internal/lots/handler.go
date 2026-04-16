@@ -75,6 +75,10 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 			response.Err(w, http.StatusBadRequest, "INVALID_DATA", err.Error())
 			return
 		}
+		if errors.Is(err, ErrLotCodeTaken) {
+			response.Err(w, http.StatusConflict, "LOT_CODE_TAKEN", "ya existe un lote con ese código")
+			return
+		}
 		response.Err(w, http.StatusInternalServerError, "INTERNAL_ERROR", "error al crear lote")
 		return
 	}

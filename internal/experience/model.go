@@ -8,27 +8,37 @@ import (
 
 // PublicLot datos públicos de un lote para la landing del consumidor.
 type PublicLot struct {
-	ID               uuid.UUID       `json:"id"`
-	WineryID         uuid.UUID       `json:"-"`
-	Name             string          `json:"name"`
-	Variety          *string         `json:"variety,omitempty"`
-	VintageYear      *int            `json:"vintage_year,omitempty"`
-	LotCode          *string         `json:"lot_code,omitempty"`
-	WinemakerName    *string         `json:"winemaker_name,omitempty"`
-	WinemakerNote    *string         `json:"winemaker_note,omitempty"`
-	BottleCount      *int            `json:"bottle_count,omitempty"`
-	BarrelType       *string         `json:"barrel_type,omitempty"`
-	BarrelMonths     *int            `json:"barrel_months,omitempty"`
-	FermentationDays *int            `json:"fermentation_days,omitempty"`
-	HarvestDate      *time.Time      `json:"harvest_date,omitempty"`
-	HarvestKg        *float64        `json:"harvest_kg,omitempty"`
-	BrixAtHarvest    *float64        `json:"brix_at_harvest,omitempty"`
-	BottledAt        *time.Time      `json:"bottled_at,omitempty"`
-	ShortCode        string          `json:"short_code"`
-	QRCodeID         uuid.UUID       `json:"-"`
-	Winery           WineryPublic    `json:"winery"`
-	SensoryProfile   *SensoryProfile `json:"sensory_profile,omitempty"`
-	CreatedAt        time.Time       `json:"created_at"`
+	ID               uuid.UUID        `json:"id"`
+	WineryID         uuid.UUID        `json:"-"`
+	Name             string           `json:"name"`
+	Variety          *string          `json:"variety,omitempty"`
+	VintageYear      *int             `json:"vintage_year,omitempty"`
+	LotCode          *string          `json:"lot_code,omitempty"`
+	WinemakerName    *string          `json:"winemaker_name,omitempty"`
+	WinemakerNote    *string          `json:"winemaker_note,omitempty"`
+	BottleCount      *int             `json:"bottle_count,omitempty"`
+	BarrelType       *string          `json:"barrel_type,omitempty"`
+	BarrelMonths     *int             `json:"barrel_months,omitempty"`
+	FermentationDays *int             `json:"fermentation_days,omitempty"`
+	HarvestDate      *time.Time       `json:"harvest_date,omitempty"`
+	HarvestKg        *float64         `json:"harvest_kg,omitempty"`
+	BrixAtHarvest    *float64         `json:"brix_at_harvest,omitempty"`
+	PhAtHarvest      *float64         `json:"ph_at_harvest,omitempty"`
+	BottledAt        *time.Time       `json:"bottled_at,omitempty"`
+	ShortCode        string           `json:"short_code"`
+	QRCodeID         uuid.UUID        `json:"-"`
+	Winery           WineryPublic     `json:"winery"`
+	Vineyard         *VineyardPublic  `json:"vineyard,omitempty"`
+	SensoryProfile   *SensoryProfile  `json:"sensory_profile,omitempty"`
+	CreatedAt        time.Time        `json:"created_at"`
+}
+
+// VineyardPublic datos públicos del viñedo.
+type VineyardPublic struct {
+	Name      string  `json:"name"`
+	Location  *string `json:"location,omitempty"`
+	AltitudeM *int    `json:"altitude_m,omitempty"`
+	SoilType  *string `json:"soil_type,omitempty"`
 }
 
 // WineryPublic datos públicos de la bodega.

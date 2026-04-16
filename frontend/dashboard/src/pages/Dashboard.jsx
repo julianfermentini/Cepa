@@ -4,15 +4,16 @@ import { api } from '../api/client'
 import { useAuth } from '../context/AuthContext'
 import Layout from '../components/Layout'
 import StatusBadge from '../components/StatusBadge'
+import { Wine, CheckCircle2, FileEdit, Archive, ChevronRight, Loader2, Plus } from 'lucide-react'
 
-function StatCard({ label, value, icon, accent }) {
+function StatCard({ label, value, Icon, accent, iconColor }) {
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex items-start gap-4">
       <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${accent}`}>
-        <span className="text-xl">{icon}</span>
+        <Icon className={`w-5 h-5 ${iconColor}`} strokeWidth={1.75} />
       </div>
       <div>
-        <p className="text-3xl font-serif font-semibold text-gray-900">{value}</p>
+        <p className="text-3xl font-serif font-semibold text-gray-900 tabular-nums">{value}</p>
         <p className="text-sm text-gray-500 mt-0.5">{label}</p>
       </div>
     </div>
@@ -65,10 +66,10 @@ export default function Dashboard() {
       <div className="px-10 py-8">
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
-          <StatCard label="Total de lotes" value={counts.total} icon="🍾" accent="bg-wine-50" />
-          <StatCard label="Publicados" value={counts.active} icon="✅" accent="bg-emerald-50" />
-          <StatCard label="Borradores" value={counts.draft} icon="📝" accent="bg-amber-50" />
-          <StatCard label="Archivados" value={counts.archived} icon="📦" accent="bg-gray-50" />
+          <StatCard label="Total de lotes" value={counts.total}    Icon={Wine}         accent="bg-wine-50"    iconColor="text-wine-700" />
+          <StatCard label="Publicados"     value={counts.active}   Icon={CheckCircle2} accent="bg-emerald-50" iconColor="text-emerald-600" />
+          <StatCard label="Borradores"     value={counts.draft}    Icon={FileEdit}     accent="bg-amber-50"   iconColor="text-amber-600" />
+          <StatCard label="Archivados"     value={counts.archived} Icon={Archive}      accent="bg-gray-100"   iconColor="text-gray-500" />
         </div>
 
         {/* Recent lots */}
@@ -83,28 +84,26 @@ export default function Dashboard() {
               className="text-sm text-wine-700 hover:text-wine-900 font-medium flex items-center gap-1 transition-colors"
             >
               Ver todos
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
+              <ChevronRight className="w-4 h-4" strokeWidth={2} />
             </Link>
           </div>
 
           {loading ? (
             <div className="flex items-center justify-center py-16 gap-3 text-gray-400">
-              <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-              </svg>
+              <Loader2 className="w-5 h-5 animate-spin" />
               Cargando lotes...
             </div>
           ) : recent.length === 0 ? (
             <div className="text-center py-16 px-6">
               <div className="w-16 h-16 bg-wine-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <span className="text-3xl">🍾</span>
+                <Wine className="w-8 h-8 text-wine-700" strokeWidth={1.5} />
               </div>
               <h3 className="font-serif text-lg font-semibold text-gray-900 mb-2">Tu primer lote te espera</h3>
               <p className="text-gray-500 text-sm mb-6">Cargá los datos de producción y generá el QR para tu etiqueta.</p>
-              <Link to="/lots/new" className="btn-primary">Crear primer lote</Link>
+              <Link to="/lots/new" className="btn-primary inline-flex items-center gap-2">
+                <Plus className="w-4 h-4" strokeWidth={2} />
+                Crear primer lote
+              </Link>
             </div>
           ) : (
             <table className="w-full">
@@ -132,9 +131,10 @@ export default function Dashboard() {
                     <td className="px-6 py-4 text-right">
                       <Link
                         to={`/lots/${lot.id}`}
-                        className="text-xs text-gray-400 group-hover:text-wine-700 font-medium transition-colors opacity-0 group-hover:opacity-100"
+                        className="text-xs text-gray-400 group-hover:text-wine-700 font-medium transition-colors opacity-0 group-hover:opacity-100 inline-flex items-center gap-1"
                       >
-                        Ver →
+                        Ver
+                        <ChevronRight className="w-3.5 h-3.5" strokeWidth={2} />
                       </Link>
                     </td>
                   </tr>
