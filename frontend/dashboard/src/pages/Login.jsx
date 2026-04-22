@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { Wine, Loader2, AlertCircle } from 'lucide-react'
+import { Loader2, AlertCircle } from 'lucide-react'
 
 export default function Login() {
   const { login } = useAuth()
@@ -38,9 +38,13 @@ export default function Login() {
         {/* Contenido sobre la foto */}
         <div className="relative z-10 flex flex-col justify-between p-12 w-full">
           {/* Logo */}
-          <div className="flex items-center gap-3">
-            <Wine className="w-8 h-8 text-gold-400" strokeWidth={1.5} />
-            <span className="text-white text-2xl font-serif font-semibold tracking-wide">Cepa</span>
+          <div className="flex items-center">
+            <img
+              src="/img/iconoCEPA.png"
+              alt="Cepa"
+              draggable={false}
+              className="h-16 w-auto select-none"
+            />
           </div>
 
           {/* Quote */}
@@ -79,9 +83,14 @@ export default function Login() {
       <div className="flex-1 flex items-center justify-center px-8 py-12 bg-stone-50">
         <div className="w-full max-w-md">
           {/* Mobile logo */}
-          <div className="flex items-center gap-2 mb-10 lg:hidden">
-            <Wine className="w-7 h-7 text-wine-800" strokeWidth={1.5} />
-            <span className="text-wine-900 text-xl font-serif font-semibold">Cepa</span>
+          <div className="flex items-center mb-10 lg:hidden">
+            <img
+              src="/img/iconoCEPA.png"
+              alt="Cepa"
+              draggable={false}
+              className="h-12 w-auto select-none"
+              style={{ filter: 'brightness(0) saturate(100%) invert(13%) sepia(32%) saturate(3400%) hue-rotate(325deg) brightness(70%) contrast(95%)' }}
+            />
           </div>
 
           <div className="mb-8">

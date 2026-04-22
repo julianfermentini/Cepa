@@ -28,16 +28,17 @@ export default function WineSplash() {
           animation: `cepa-wine-splash-content ${DURATION_MS}ms cubic-bezier(0.22, 1, 0.36, 1) forwards`,
         }}
       >
-        <h1
-          className="font-grotesk font-bold leading-none text-white"
+        <img
+          src="/img/iconoCEPA.png"
+          alt="Cepa"
+          draggable={false}
+          className="select-none"
           style={{
-            fontSize: 'clamp(4.5rem, 18vw, 10rem)',
-            letterSpacing: '0.18em',
-            textShadow: '0 4px 40px rgba(0,0,0,0.25)',
+            width: 'clamp(14rem, 34vw, 24rem)',
+            height: 'auto',
+            filter: 'drop-shadow(0 6px 50px rgba(0,0,0,0.35))',
           }}
-        >
-          CEPA
-        </h1>
+        />
         <div
           className="h-px w-24"
           style={{

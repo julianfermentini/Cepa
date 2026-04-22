@@ -282,11 +282,13 @@ function HeroSection({ lot }) {
       <div className="relative z-10 flex flex-col justify-between flex-1 px-5 pt-11 pb-7">
         {/* Top bar */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: '#8F202C' }}>
-              {Icon.wine('w-4 h-4 text-white')}
-            </div>
-            <span className="text-white/80 text-xs font-grotesk font-semibold tracking-widest uppercase">Cepa</span>
+          <div className="flex items-center">
+            <img
+              src="/img/iconoCEPA.png"
+              alt="Cepa"
+              draggable={false}
+              className="h-9 w-auto select-none"
+            />
           </div>
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full backdrop-blur-sm"
             style={{ background: 'rgba(76,175,80,0.18)', border: '1px solid rgba(76,175,80,0.35)' }}>

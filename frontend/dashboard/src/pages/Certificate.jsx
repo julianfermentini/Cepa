@@ -100,9 +100,13 @@ export default function Certificate() {
           <div className="bg-gradient-to-br from-slate-900 to-slate-800 print:bg-gray-900 px-10 py-8 text-center relative overflow-hidden">
             <div className="absolute inset-0 opacity-10" style={{backgroundImage: "url('https://images.unsplash.com/photo-1474722883778-792e7990302f?auto=format&fit=crop&w=800&q=40')", backgroundSize: 'cover', backgroundPosition: 'center'}} />
             <div className="relative z-10">
-              <div className="flex items-center justify-center gap-2 mb-4">
-                <Wine className="w-5 h-5 text-gold-400" strokeWidth={1.5} />
-                <span className="text-white/70 text-sm font-medium tracking-widest uppercase">Cepa</span>
+              <div className="flex items-center justify-center mb-4">
+                <img
+                  src="/img/iconoCEPA.png"
+                  alt="Cepa"
+                  draggable={false}
+                  className="h-10 w-auto select-none"
+                />
               </div>
               <p className="text-gold-400 text-xs font-bold tracking-[0.2em] uppercase mb-1 cert-gold">
                 {lot.winery.name}

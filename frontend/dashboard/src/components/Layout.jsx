@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { LayoutDashboard, Boxes, LineChart, LogOut, Wine, ArrowUpRight } from 'lucide-react'
+import { LayoutDashboard, Boxes, LineChart, LogOut, ArrowUpRight } from 'lucide-react'
 
 const navItems = [
   { to: '/',          label: 'Dashboard', Icon: LayoutDashboard },
@@ -26,9 +26,13 @@ export default function Layout({ children }) {
 
         {/* Logo */}
         <div className="px-5 pt-6 pb-5">
-          <div className="flex items-center gap-2.5">
-            <Wine className="w-6 h-6 text-gold-400" strokeWidth={1.75} />
-            <span className="text-white font-serif text-xl font-semibold tracking-wide">Cepa</span>
+          <div className="flex items-center justify-center">
+            <img
+              src="/img/iconoCEPA.png"
+              alt="Cepa"
+              className="h-14 w-auto select-none"
+              draggable={false}
+            />
           </div>
           <div className="mt-4 h-px bg-gradient-to-r from-gold-400/60 via-gold-400/20 to-transparent" />
         </div>
