@@ -26,6 +26,7 @@ type Lot struct {
 	BottleCount      *int       `json:"bottle_count,omitempty"`
 	BottledAt        *time.Time `json:"bottled_at,omitempty"`
 	LotCode          *string    `json:"lot_code,omitempty"`
+	ImageURL         *string    `json:"image_url,omitempty"`
 	Status           string     `json:"status"`
 	Hash             *string    `json:"hash,omitempty"`
 	CreatedAt        time.Time  `json:"created_at"`
@@ -49,6 +50,7 @@ type CreateLotRequest struct {
 	BottleCount      *int       `json:"bottle_count,omitempty"`
 	BottledAt        *time.Time `json:"bottled_at,omitempty"`
 	LotCode          *string    `json:"lot_code,omitempty"`
+	ImageURL         *string    `json:"image_url,omitempty"`
 }
 
 // UpdateLotRequest payload para actualizar un lote (todos los campos opcionales).
@@ -68,6 +70,7 @@ type UpdateLotRequest struct {
 	BottleCount      *int       `json:"bottle_count,omitempty"`
 	BottledAt        *time.Time `json:"bottled_at,omitempty"`
 	LotCode          *string    `json:"lot_code,omitempty"`
+	ImageURL         *string    `json:"image_url,omitempty"`
 	Status           *string    `json:"status,omitempty"`
 }
 

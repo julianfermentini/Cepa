@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import WineSplash from '../components/WineSplash'
 
 const API = '/api/v1/public/lots'
 
@@ -125,11 +126,11 @@ function SensoryBar({ label, value }) {
     <div>
       <div className="flex justify-between items-center mb-1.5">
         <span className="text-xs font-jakarta font-medium text-gray-500">{label}</span>
-        <span className="text-xs font-jakarta font-bold tabular-nums" style={{ color: '#8E24AC' }}>{value}</span>
+        <span className="text-xs font-jakarta font-bold tabular-nums" style={{ color: '#8F202C' }}>{value}</span>
       </div>
-      <div className="h-2 rounded-full overflow-hidden" style={{ background: '#F5EFE6' }}>
+      <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
         <div className="h-full rounded-full transition-all duration-700"
-          style={{ width: `${value}%`, background: 'linear-gradient(90deg,#8E24AC,#CE93D8)' }}/>
+          style={{ width: `${value}%`, background: 'linear-gradient(90deg,#8F202C,#E8969D)' }}/>
       </div>
     </div>
   )
@@ -141,27 +142,27 @@ function JourneyStep({ iconEl, title, items, isLast }) {
     <div className="flex gap-4">
       <div className="flex flex-col items-center shrink-0">
         <div className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 text-white"
-          style={{ background: 'linear-gradient(135deg,#8E24AC,#6A1B9A)' }}>
+          style={{ background: 'linear-gradient(135deg,#8F202C,#5A1A24)' }}>
           {iconEl}
         </div>
         {!isLast && <div className="w-0.5 flex-1 mt-2 min-h-[2rem]"
-          style={{ background: 'linear-gradient(180deg,#8E24AC44,transparent)' }}/>}
+          style={{ background: 'linear-gradient(180deg,#8F202C44,transparent)' }}/>}
       </div>
       <div className="pb-6 flex-1 min-w-0">
-        <p className="text-[10px] font-jakarta font-bold uppercase tracking-[0.18em] mb-2" style={{ color: '#8E24AC' }}>{title}</p>
+        <p className="text-[10px] font-jakarta font-bold uppercase tracking-[0.18em] mb-2" style={{ color: '#8F202C' }}>{title}</p>
         {hasData ? (
           <div className="flex flex-wrap gap-x-4 gap-y-1.5">
             {items.map(({ label, value }) =>
               value != null && value !== '' ? (
                 <div key={label} className="flex items-center gap-1.5">
-                  <span className="text-gray-400 text-xs font-jakarta">{label}:</span>
-                  <span className="text-gray-800 text-xs font-jakarta font-semibold">{value}</span>
+                  <span className="text-gray-500 text-xs font-jakarta">{label}:</span>
+                  <span className="text-gray-100 text-xs font-jakarta font-semibold">{value}</span>
                 </div>
               ) : null
             )}
           </div>
         ) : (
-          <p className="text-gray-400 text-xs italic font-jakarta">Sin datos registrados</p>
+          <p className="text-gray-500 text-xs italic font-jakarta">Sin datos registrados</p>
         )}
       </div>
     </div>
@@ -171,13 +172,13 @@ function JourneyStep({ iconEl, title, items, isLast }) {
 function StatCard({ iconEl, value, label, accent }) {
   if (!value) return null
   return (
-    <div className="flex-1 bg-white rounded-2xl p-4 flex flex-col items-center gap-2 min-w-0"
-      style={{ boxShadow: '0 1px 8px rgba(0,0,0,0.06)' }}>
+    <div className="flex-1 rounded-2xl p-4 flex flex-col items-center gap-2 min-w-0"
+      style={{ background: '#17171A', border: '1px solid rgba(255,255,255,0.05)', boxShadow: '0 1px 8px rgba(0,0,0,0.3)' }}>
       <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: accent + '18' }}>
         <span style={{ color: accent }}>{iconEl}</span>
       </div>
-      <span className="font-grotesk font-bold text-gray-900 text-lg leading-none truncate w-full text-center">{value}</span>
-      <span className="text-[10px] font-jakarta text-gray-400 uppercase tracking-wide text-center leading-tight">{label}</span>
+      <span className="font-grotesk font-bold text-white text-lg leading-none truncate w-full text-center">{value}</span>
+      <span className="text-[10px] font-jakarta text-gray-500 uppercase tracking-wide text-center leading-tight">{label}</span>
     </div>
   )
 }
@@ -186,9 +187,9 @@ function ServiceChip({ iconEl, value, label }) {
   if (!value) return null
   return (
     <div className="flex-1 rounded-2xl p-3.5 flex flex-col items-center gap-1.5 min-w-0"
-      style={{ background: '#F5EFE6' }}>
-      <span style={{ color: '#8E24AC' }}>{iconEl}</span>
-      <span className="font-grotesk font-bold text-gray-900 text-sm leading-none text-center">{value}</span>
+      style={{ background: '#26262A' }}>
+      <span style={{ color: '#8F202C' }}>{iconEl}</span>
+      <span className="font-grotesk font-bold text-white text-sm leading-none text-center">{value}</span>
       <span className="text-[10px] font-jakarta text-gray-500 text-center leading-tight">{label}</span>
     </div>
   )
@@ -204,7 +205,7 @@ function AuthBadge({ winery, lotCode }) {
           {Icon.shield('w-5 h-5')}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-grotesk font-bold text-sm mb-0.5" style={{ color: '#2E7D32' }}>Lote verificado</p>
+          <p className="font-grotesk font-bold text-sm mb-0.5" style={{ color: '#81C784' }}>Lote verificado</p>
           <p className="text-xs font-jakarta text-cepa-secondary">
             Registrado y certificado por <span className="font-semibold">{winery}</span>
           </p>
@@ -232,7 +233,7 @@ function CtaButtons({ short_code, inCellar, onToggleCellar, navigate }) {
       </button>
       <button onClick={() => navigate(`/wine/${short_code}/certificate`)}
         className="w-full flex items-center justify-center gap-2.5 py-4 rounded-2xl text-sm font-grotesk font-bold text-white transition-all duration-200 active:scale-[0.97]"
-        style={{ background: 'linear-gradient(135deg,#8E24AC 0%,#6A1B9A 100%)', boxShadow: '0 4px 16px rgba(142,36,172,0.35)' }}>
+        style={{ background: 'linear-gradient(135deg,#8F202C 0%,#5A1A24 100%)', boxShadow: '0 4px 16px rgba(143,32,44,0.35)' }}>
         {Icon.download('w-4 h-4')}
         Descargar certificado
       </button>
@@ -248,18 +249,18 @@ function BottomTabBar({ active, onChange }) {
   ]
   return (
     <div className="fixed bottom-0 left-0 right-0 z-40 px-4 pb-6 pt-2 max-w-lg"
-      style={{ background: 'linear-gradient(to top,#F5EFE6 68%,rgba(245,239,230,0))', left: '50%', transform: 'translateX(-50%)', width: '100%' }}>
-      <div className="bg-white rounded-2xl flex items-center px-2 py-1.5"
-        style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.1)' }}>
+      style={{ background: 'linear-gradient(to top,#0E0E10 68%,rgba(14,14,16,0))', left: '50%', transform: 'translateX(-50%)', width: '100%' }}>
+      <div className="rounded-2xl flex items-center px-2 py-1.5"
+        style={{ background: '#17171A', border: '1px solid rgba(255,255,255,0.06)', boxShadow: '0 2px 20px rgba(0,0,0,0.4)' }}>
         {tabs.map(tab => (
           <button key={tab.id} onClick={() => onChange(tab.id)}
             className="flex-1 flex flex-col items-center gap-1 py-2 rounded-xl transition-all duration-200 active:scale-95"
-            style={active === tab.id ? { background: '#EDE0F5' } : {}}>
-            <span style={{ color: active === tab.id ? '#8E24AC' : '#9B9B9B' }}>
+            style={active === tab.id ? { background: 'rgba(143,32,44,0.22)' } : {}}>
+            <span style={{ color: active === tab.id ? '#E8969D' : '#6B6B70' }}>
               {tab.icon('w-6 h-6')}
             </span>
             <span className="text-[10px] font-grotesk font-bold"
-              style={{ color: active === tab.id ? '#8E24AC' : '#9B9B9B' }}>
+              style={{ color: active === tab.id ? '#E8969D' : '#6B6B70' }}>
               {tab.label}
             </span>
           </button>
@@ -271,17 +272,18 @@ function BottomTabBar({ active, onChange }) {
 
 // ─── Hero section (shared between Historia & Técnica) ─────────────────────────
 function HeroSection({ lot }) {
+  const heroImg = lot.image_url || 'https://images.unsplash.com/photo-1474722883778-792e7990302f?auto=format&fit=crop&w=900&q=75'
   return (
     <div className="relative min-h-[48vh] flex flex-col overflow-hidden">
       <div className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1474722883778-792e7990302f?auto=format&fit=crop&w=900&q=75')" }}/>
+        style={{ backgroundImage: `url('${heroImg}')` }}/>
       <div className="absolute inset-0"
-        style={{ background: 'linear-gradient(to bottom,rgba(10,4,18,0.55) 0%,rgba(10,4,18,0.3) 40%,rgba(10,4,18,0.92) 100%)' }}/>
+        style={{ background: 'linear-gradient(to bottom,rgba(14,14,16,0.6) 0%,rgba(14,14,16,0.35) 40%,rgba(14,14,16,0.98) 100%)' }}/>
       <div className="relative z-10 flex flex-col justify-between flex-1 px-5 pt-11 pb-7">
         {/* Top bar */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: '#8E24AC' }}>
+            <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: '#8F202C' }}>
               {Icon.wine('w-4 h-4 text-white')}
             </div>
             <span className="text-white/80 text-xs font-grotesk font-semibold tracking-widest uppercase">Cepa</span>
@@ -296,7 +298,7 @@ function HeroSection({ lot }) {
         <div>
           {lot.winery?.name && (
             <p className="text-[11px] font-grotesk font-bold tracking-[0.22em] uppercase mb-2.5"
-              style={{ color: '#FFD700' }}>{lot.winery.name}</p>
+              style={{ color: '#D4AF37' }}>{lot.winery.name}</p>
           )}
           <h1 className="font-grotesk font-bold text-white text-[1.9rem] leading-[1.15] mb-3 drop-shadow-lg">
             {lot.name}
@@ -310,13 +312,13 @@ function HeroSection({ lot }) {
             )}
             {lot.vintage_year && (
               <span className="px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm"
-                style={{ background: 'rgba(255,215,0,0.18)', color: '#FFF176', border: '1px solid rgba(255,215,0,0.3)' }}>
+                style={{ background: 'rgba(212,175,55,0.18)', color: '#EAD58A', border: '1px solid rgba(212,175,55,0.3)' }}>
                 Cosecha {lot.vintage_year}
               </span>
             )}
             {lot.lot_code && (
               <span className="px-3 py-1 rounded-full text-xs font-mono backdrop-blur-sm"
-                style={{ background: 'rgba(142,36,172,0.25)', color: '#CE93D8', border: '1px solid rgba(142,36,172,0.35)' }}>
+                style={{ background: 'rgba(143,32,44,0.25)', color: '#E8969D', border: '1px solid rgba(143,32,44,0.35)' }}>
                 {lot.lot_code}
               </span>
             )}
@@ -337,10 +339,10 @@ function HistoriaTab({ lot, short_code, inCellar, onToggleCellar, navigate }) {
         <div className="flex gap-3">
           <StatCard iconEl={Icon.bottle('w-4 h-4')}
             value={lot.bottle_count ? lot.bottle_count.toLocaleString('es-AR') : null}
-            label="Botellas" accent="#8E24AC"/>
+            label="Botellas" accent="#8F202C"/>
           <StatCard iconEl={Icon.archive('w-4 h-4')}
             value={lot.barrel_months ? `${lot.barrel_months} m.` : null}
-            label="En barrica" accent="#FFD700"/>
+            label="En barrica" accent="#D4AF37"/>
           <StatCard iconEl={Icon.calendar('w-4 h-4')}
             value={lot.vintage_year ? `${lot.vintage_year}` : null}
             label="Cosecha" accent="#4CAF50"/>
@@ -349,20 +351,20 @@ function HistoriaTab({ lot, short_code, inCellar, onToggleCellar, navigate }) {
 
       {/* Winemaker note */}
       {lot.winemaker_note && (
-        <div className="bg-white rounded-3xl overflow-hidden" style={{ boxShadow: '0 1px 8px rgba(0,0,0,0.06)' }}>
+        <div className="rounded-3xl overflow-hidden" style={{ background: '#17171A', border: '1px solid rgba(255,255,255,0.05)', boxShadow: '0 1px 8px rgba(0,0,0,0.3)' }}>
           <div className="px-5 pt-5 pb-5">
             <div className="flex items-center gap-2.5 mb-4">
               <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-                style={{ background: '#8E24AC12', color: '#8E24AC' }}>
+                style={{ background: '#8F202C12', color: '#8F202C' }}>
                 {Icon.pen('w-4 h-4')}
               </div>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.18em]" style={{ color: '#8E24AC' }}>Nota del enólogo</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em]" style={{ color: '#8F202C' }}>Nota del enólogo</p>
                 {lot.winemaker_name && <p className="text-xs text-gray-500 font-medium mt-0.5">{lot.winemaker_name}</p>}
               </div>
             </div>
-            <blockquote className="text-gray-700 text-sm leading-relaxed italic pl-4"
-              style={{ borderLeft: '3px solid #8E24AC' }}>
+            <blockquote className="text-gray-300 text-sm leading-relaxed italic pl-4"
+              style={{ borderLeft: '3px solid #8F202C' }}>
               "{lot.winemaker_note}"
             </blockquote>
           </div>
@@ -370,13 +372,13 @@ function HistoriaTab({ lot, short_code, inCellar, onToggleCellar, navigate }) {
       )}
 
       {/* Journey */}
-      <div className="bg-white rounded-3xl overflow-hidden" style={{ boxShadow: '0 1px 8px rgba(0,0,0,0.06)' }}>
+      <div className="rounded-3xl overflow-hidden" style={{ background: '#17171A', border: '1px solid rgba(255,255,255,0.05)', boxShadow: '0 1px 8px rgba(0,0,0,0.3)' }}>
         <div className="px-5 pt-5 pb-1">
           <div className="flex items-center gap-2.5 mb-6">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: '#8E24AC12', color: '#8E24AC' }}>
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: '#8F202C12', color: '#8F202C' }}>
               {Icon.mapPin('w-4 h-4')}
             </div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.18em]" style={{ color: '#8E24AC' }}>El viaje de esta botella</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.18em]" style={{ color: '#8F202C' }}>El viaje de esta botella</p>
           </div>
           <JourneyStep iconEl={Icon.mountain('w-4 h-4')} title="Viñedo" items={[
             { label: 'Variedad',  value: lot.variety },
@@ -403,8 +405,8 @@ function HistoriaTab({ lot, short_code, inCellar, onToggleCellar, navigate }) {
 
       <AuthBadge winery={lot.winery?.name} lotCode={lot.lot_code}/>
       <CtaButtons short_code={short_code} inCellar={inCellar} onToggleCellar={onToggleCellar} navigate={navigate}/>
-      <p className="text-center text-[11px] font-jakarta pb-2" style={{ color: '#C4B8A8' }}>
-        Powered by <span className="font-semibold" style={{ color: '#A89C8C' }}>Cepa</span>
+      <p className="text-center text-[11px] font-jakarta pb-2" style={{ color: '#5A5A60' }}>
+        Powered by <span className="font-semibold" style={{ color: '#8B8B92' }}>Cepa</span>
         {' · '}<span className="font-mono">{short_code}</span>
       </p>
     </div>
@@ -419,13 +421,13 @@ function TecnicaTab({ lot, short_code, inCellar, onToggleCellar, navigate }) {
 
       {/* Sensory profile */}
       {sp && (
-        <div className="bg-white rounded-3xl overflow-hidden" style={{ boxShadow: '0 1px 8px rgba(0,0,0,0.06)' }}>
+        <div className="rounded-3xl overflow-hidden" style={{ background: '#17171A', border: '1px solid rgba(255,255,255,0.05)', boxShadow: '0 1px 8px rgba(0,0,0,0.3)' }}>
           <div className="px-5 pt-5 pb-5">
             <div className="flex items-center gap-2.5 mb-5">
-              <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: '#8E24AC12', color: '#8E24AC' }}>
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: '#8F202C12', color: '#8F202C' }}>
                 {Icon.star('w-4 h-4')}
               </div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em]" style={{ color: '#8E24AC' }}>Perfil sensorial</p>
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em]" style={{ color: '#8F202C' }}>Perfil sensorial</p>
             </div>
             <div className="grid grid-cols-2 gap-x-6 gap-y-4">
               <SensoryBar label="Fruta roja" value={sp.red_fruit}/>
@@ -436,7 +438,7 @@ function TecnicaTab({ lot, short_code, inCellar, onToggleCellar, navigate }) {
               <SensoryBar label="Cuerpo"     value={sp.body}/>
             </div>
             {(sp.service_temp_min || sp.decant_minutes || sp.glass_type) && (
-              <div className="mt-5 pt-5 flex gap-3" style={{ borderTop: '1px solid #F5EFE6' }}>
+              <div className="mt-5 pt-5 flex gap-3" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
                 <ServiceChip iconEl={Icon.thermometer('w-4 h-4')}
                   value={sp.service_temp_min ? `${sp.service_temp_min}–${sp.service_temp_max ?? sp.service_temp_min}°C` : null}
                   label="Temperatura"/>
@@ -452,13 +454,13 @@ function TecnicaTab({ lot, short_code, inCellar, onToggleCellar, navigate }) {
       )}
 
       {/* Technical data */}
-      <div className="bg-white rounded-3xl overflow-hidden" style={{ boxShadow: '0 1px 8px rgba(0,0,0,0.06)' }}>
+      <div className="rounded-3xl overflow-hidden" style={{ background: '#17171A', border: '1px solid rgba(255,255,255,0.05)', boxShadow: '0 1px 8px rgba(0,0,0,0.3)' }}>
         <div className="px-5 pt-5 pb-5">
           <div className="flex items-center gap-2.5 mb-5">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: '#8E24AC12', color: '#8E24AC' }}>
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: '#8F202C12', color: '#8F202C' }}>
               {Icon.flask('w-4 h-4')}
             </div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.18em]" style={{ color: '#8E24AC' }}>Datos de producción</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.18em]" style={{ color: '#8F202C' }}>Datos de producción</p>
           </div>
           <div className="space-y-0">
             {[
@@ -473,9 +475,9 @@ function TecnicaTab({ lot, short_code, inCellar, onToggleCellar, navigate }) {
               { label: 'Enólogo',          value: lot.winemaker_name },
             ].filter(r => r.value).map((row, i, arr) => (
               <div key={row.label} className="flex justify-between items-start py-3"
-                style={{ borderBottom: i < arr.length - 1 ? '1px solid #F5EFE6' : 'none' }}>
-                <span className="text-xs font-jakarta font-semibold text-gray-400 uppercase tracking-wide">{row.label}</span>
-                <span className="text-sm font-jakarta font-semibold text-gray-800 text-right max-w-[55%]">{row.value}</span>
+                style={{ borderBottom: i < arr.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none' }}>
+                <span className="text-xs font-jakarta font-semibold text-gray-500 uppercase tracking-wide">{row.label}</span>
+                <span className="text-sm font-jakarta font-semibold text-gray-100 text-right max-w-[55%]">{row.value}</span>
               </div>
             ))}
           </div>
@@ -484,13 +486,16 @@ function TecnicaTab({ lot, short_code, inCellar, onToggleCellar, navigate }) {
 
       <AuthBadge winery={lot.winery?.name} lotCode={lot.lot_code}/>
       <CtaButtons short_code={short_code} inCellar={inCellar} onToggleCellar={onToggleCellar} navigate={navigate}/>
-      <p className="text-center text-[11px] font-jakarta pb-2" style={{ color: '#C4B8A8' }}>
-        Powered by <span className="font-semibold" style={{ color: '#A89C8C' }}>Cepa</span>
+      <p className="text-center text-[11px] font-jakarta pb-2" style={{ color: '#5A5A60' }}>
+        Powered by <span className="font-semibold" style={{ color: '#8B8B92' }}>Cepa</span>
         {' · '}<span className="font-mono">{short_code}</span>
       </p>
     </div>
   )
 }
+
+// Debe coincidir con DURATION_MS de WineSplash.jsx
+const SPLASH_MS = 1900
 
 // ─── Root component ───────────────────────────────────────────────────────────
 export default function WineLanding() {
@@ -502,6 +507,7 @@ export default function WineLanding() {
   const [tab, setTab] = useState('historia')
   const [inCellar, setInCellar] = useState(false)
   const [cellarToast, setCellarToast] = useState(false)
+  const [splashDone, setSplashDone] = useState(false)
 
   useEffect(() => {
     fetch(`${API}/${short_code}`)
@@ -510,6 +516,17 @@ export default function WineLanding() {
       .catch(() => setNotFound(true))
       .finally(() => setLoading(false))
   }, [short_code])
+
+  useEffect(() => {
+    const t = setTimeout(() => setSplashDone(true), SPLASH_MS)
+    return () => clearTimeout(t)
+  }, [])
+
+  useEffect(() => {
+    const prev = document.body.style.background
+    document.body.style.background = '#0E0E10'
+    return () => { document.body.style.background = prev }
+  }, [])
 
   useEffect(() => {
     if (!lot) return
@@ -531,12 +548,24 @@ export default function WineLanding() {
     }
   }
 
+  // Mientras el splash está activo, tapamos todo: el contenido no se rendea
+  // aunque los datos ya hayan llegado. Esto garantiza que el splash sea siempre
+  // lo primero que ve el usuario, sin flashes de fondo ni contenido parcial.
+  if (!splashDone) {
+    return (
+      <>
+        <WineSplash/>
+        <div className="min-h-screen" style={{ background: '#0E0E10' }}/>
+      </>
+    )
+  }
+
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: '#F5EFE6' }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: '#0E0E10' }}>
         <div className="flex flex-col items-center gap-4">
           <div className="w-14 h-14 rounded-2xl flex items-center justify-center animate-pulse"
-            style={{ background: 'linear-gradient(135deg,#8E24AC,#6A1B9A)' }}>
+            style={{ background: 'linear-gradient(135deg,#8F202C,#5A1A24)' }}>
             {Icon.wine('w-7 h-7 text-white')}
           </div>
           <p className="font-jakarta text-sm text-gray-500">Descorchando...</p>
@@ -547,13 +576,13 @@ export default function WineLanding() {
 
   if (notFound || !lot) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-6" style={{ background: '#F5EFE6' }}>
+      <div className="min-h-screen flex items-center justify-center px-6" style={{ background: '#0E0E10' }}>
         <div className="text-center">
-          <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center mx-auto mb-4"
-            style={{ boxShadow: '0 2px 16px rgba(0,0,0,0.08)' }}>
-            {Icon.bottle('w-8 h-8 text-gray-300')}
+          <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
+            style={{ background: '#17171A', border: '1px solid rgba(255,255,255,0.06)', boxShadow: '0 2px 16px rgba(0,0,0,0.4)' }}>
+            {Icon.bottle('w-8 h-8 text-gray-600')}
           </div>
-          <h1 className="font-grotesk font-bold text-xl text-gray-800 mb-2">Vino no encontrado</h1>
+          <h1 className="font-grotesk font-bold text-xl text-gray-100 mb-2">Vino no encontrado</h1>
           <p className="font-jakarta text-sm text-gray-500">El código <span className="font-mono">{short_code}</span> no corresponde a ningún lote.</p>
         </div>
       </div>
@@ -561,7 +590,7 @@ export default function WineLanding() {
   }
 
   return (
-    <div className="min-h-screen font-jakarta" style={{ background: '#F5EFE6' }}>
+    <div className="min-h-screen font-jakarta" style={{ background: '#0E0E10' }}>
       <HeroSection lot={lot}/>
 
       {tab === 'historia' && (

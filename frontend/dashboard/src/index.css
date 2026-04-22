@@ -43,3 +43,45 @@
     @apply mb-8 pb-6 border-b border-gray-100;
   }
 }
+
+/* Pantalla de bienvenida del Dashboard: aparece rápido, se difumina saliendo. */
+@keyframes cepa-splash-bg {
+  0%   { opacity: 0; }
+  12%  { opacity: 1; }
+  55%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes cepa-splash-content {
+  0%   { opacity: 0; transform: translateY(8px) scale(0.97); letter-spacing: 0.05em; }
+  15%  { opacity: 1; transform: translateY(0)   scale(1);    letter-spacing: 0.22em; }
+  55%  { opacity: 1; transform: translateY(0)   scale(1);    letter-spacing: 0.22em; }
+  100% { opacity: 0; transform: translateY(-4px) scale(1.04); letter-spacing: 0.3em;  filter: blur(6px); }
+}
+
+@keyframes cepa-splash-line {
+  0%   { opacity: 0; transform: scaleX(0); }
+  25%  { opacity: 1; transform: scaleX(1); }
+  100% { opacity: 0; transform: scaleX(1.4); }
+}
+
+/* Splash de la landing del consumidor (QR): bordó de marca, fade + blur. */
+/* El fondo arranca opaco en el primer frame para tapar cualquier flash de contenido. */
+@keyframes cepa-wine-splash-bg {
+  0%   { opacity: 1; }
+  75%  { opacity: 1; }
+  100% { opacity: 0; filter: blur(4px); }
+}
+
+@keyframes cepa-wine-splash-content {
+  0%   { opacity: 0; transform: scale(0.94); letter-spacing: 0.05em; filter: blur(6px); }
+  22%  { opacity: 1; transform: scale(1);    letter-spacing: 0.18em; filter: blur(0); }
+  70%  { opacity: 1; transform: scale(1);    letter-spacing: 0.18em; filter: blur(0); }
+  100% { opacity: 0; transform: scale(1.08); letter-spacing: 0.28em; filter: blur(10px); }
+}
+
+@keyframes cepa-wine-splash-line {
+  0%   { opacity: 0; transform: scaleX(0); }
+  30%  { opacity: 1; transform: scaleX(1); }
+  100% { opacity: 0; transform: scaleX(1.5); }
+}

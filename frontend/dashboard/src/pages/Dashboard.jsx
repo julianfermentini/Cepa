@@ -4,6 +4,7 @@ import { api } from '../api/client'
 import { useAuth } from '../context/AuthContext'
 import Layout from '../components/Layout'
 import StatusBadge from '../components/StatusBadge'
+import WelcomeSplash from '../components/WelcomeSplash'
 import { Wine, CheckCircle2, FileEdit, Archive, ChevronRight, Loader2, Plus } from 'lucide-react'
 
 function StatCard({ label, value, Icon, accent, iconColor }) {
@@ -45,6 +46,7 @@ export default function Dashboard() {
 
   return (
     <Layout>
+      <WelcomeSplash />
       {/* Hero banner */}
       <div className="relative h-52 overflow-hidden">
         <div

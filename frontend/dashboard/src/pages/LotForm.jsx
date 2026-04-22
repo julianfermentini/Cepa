@@ -1,8 +1,32 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams, Link } from 'react-router-dom'
 import { api } from '../api/client'
 import Layout from '../components/Layout'
-import { Loader2, AlertCircle } from 'lucide-react'
+import { Loader2, AlertCircle, ImagePlus, Trash2 } from 'lucide-react'
+
+// Redimensiona la imagen a un ancho máx y la convierte a data URL JPEG.
+// Devuelve { dataUrl, sizeKB } o lanza un error legible.
+async function fileToResizedDataURL(file, { maxWidth = 800, quality = 0.85 } = {}) {
+  if (!file.type.startsWith('image/')) {
+    throw new Error('El archivo debe ser una imagen.')
+  }
+  const bitmap = await createImageBitmap(file).catch(() => null)
+  if (!bitmap) throw new Error('No se pudo procesar la imagen.')
+
+  const ratio = bitmap.width > maxWidth ? maxWidth / bitmap.width : 1
+  const w = Math.round(bitmap.width * ratio)
+  const h = Math.round(bitmap.height * ratio)
+
+  const canvas = document.createElement('canvas')
+  canvas.width = w
+  canvas.height = h
+  const ctx = canvas.getContext('2d')
+  ctx.drawImage(bitmap, 0, 0, w, h)
+
+  const dataUrl = canvas.toDataURL('image/jpeg', quality)
+  const sizeKB = Math.round((dataUrl.length * 0.75) / 1024)
+  return { dataUrl, sizeKB }
+}
 
 const STATUSES = [
   { value: 'draft',    label: 'Borrador' },
@@ -45,11 +69,15 @@ export default function LotForm() {
     winemaker_name: '', winemaker_note: '', bottle_count: '',
     barrel_type: '', barrel_months: '', fermentation_days: '',
     harvest_kg: '', brix_at_harvest: '', ph_at_harvest: '',
+    image_url: '',
     status: 'draft',
   })
   const [loading, setLoading]   = useState(false)
   const [fetching, setFetching] = useState(isEdit)
   const [error, setError]       = useState('')
+  const [imgError, setImgError] = useState('')
+  const [imgProcessing, setImgProcessing] = useState(false)
+  const fileInputRef = useRef(null)
 
   useEffect(() => {
     if (!isEdit) return
@@ -61,7 +89,9 @@ export default function LotForm() {
         bottle_count: lot.bottle_count ?? '', barrel_type: lot.barrel_type ?? '',
         barrel_months: lot.barrel_months ?? '', fermentation_days: lot.fermentation_days ?? '',
         harvest_kg: lot.harvest_kg ?? '', brix_at_harvest: lot.brix_at_harvest ?? '',
-        ph_at_harvest: lot.ph_at_harvest ?? '', status: lot.status ?? 'draft',
+        ph_at_harvest: lot.ph_at_harvest ?? '',
+        image_url: lot.image_url ?? '',
+        status: lot.status ?? 'draft',
       }))
       .catch(() => navigate('/lots'))
       .finally(() => setFetching(false))
@@ -73,6 +103,7 @@ export default function LotForm() {
     const numFields = ['vintage_year', 'bottle_count', 'barrel_months', 'fermentation_days', 'harvest_kg', 'brix_at_harvest', 'ph_at_harvest']
     const out = {}
     for (const [k, v] of Object.entries(obj)) {
+      if (k === 'image_url') continue // se maneja aparte
       if (v === '' || v == null) continue
       out[k] = numFields.includes(k) ? Number(v) : v
     }
@@ -85,6 +116,10 @@ export default function LotForm() {
     setLoading(true)
     try {
       const payload = clean(form)
+      // image_url: en edición siempre se envía (string vacío = quitar imagen); en creación solo si hay.
+      if (isEdit) payload.image_url = form.image_url
+      else if (form.image_url) payload.image_url = form.image_url
+
       if (isEdit) await api.lots.update(id, payload)
       else await api.lots.create(payload)
       navigate('/lots')
@@ -93,6 +128,30 @@ export default function LotForm() {
     } finally {
       setLoading(false)
     }
+  }
+
+  async function handleImagePick(e) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setImgError('')
+    setImgProcessing(true)
+    try {
+      const { dataUrl, sizeKB } = await fileToResizedDataURL(file, { maxWidth: 800, quality: 0.85 })
+      if (sizeKB > 800) {
+        throw new Error(`La imagen pesa ${sizeKB} KB. Probá con una más liviana o de menor resolución.`)
+      }
+      setForm(f => ({ ...f, image_url: dataUrl }))
+    } catch (err) {
+      setImgError(err.message || 'No se pudo cargar la imagen.')
+    } finally {
+      setImgProcessing(false)
+      if (fileInputRef.current) fileInputRef.current.value = ''
+    }
+  }
+
+  function handleImageRemove() {
+    setForm(f => ({ ...f, image_url: '' }))
+    setImgError('')
   }
 
   if (fetching) {
@@ -148,6 +207,82 @@ export default function LotForm() {
                 {STATUSES.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
               </select>
             </Field>
+          </Section>
+
+          <Section title="Imagen del vino">
+            <div className="sm:col-span-2">
+              <p className="text-xs text-gray-400 mb-3">
+                Se muestra como portada en la landing del consumidor al escanear el QR.
+                Se redimensiona automáticamente. Formatos: JPG, PNG, WebP.
+              </p>
+
+              {form.image_url ? (
+                <div className="flex items-start gap-4">
+                  <div className="w-32 h-44 rounded-xl overflow-hidden border border-gray-200 bg-gray-50 shrink-0">
+                    <img
+                      src={form.image_url}
+                      alt="Previsualización del vino"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="flex-1 flex flex-col gap-2">
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="btn-secondary self-start"
+                      disabled={imgProcessing}
+                    >
+                      {imgProcessing ? (
+                        <><Loader2 className="w-4 h-4 animate-spin" /> Procesando...</>
+                      ) : (
+                        <><ImagePlus className="w-4 h-4" /> Reemplazar imagen</>
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleImageRemove}
+                      className="btn-ghost self-start text-red-600 hover:text-red-700 hover:bg-red-50"
+                    >
+                      <Trash2 className="w-4 h-4" /> Quitar imagen
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={imgProcessing}
+                  className="w-full flex flex-col items-center justify-center gap-2 py-10 border-2 border-dashed border-gray-200 rounded-xl text-gray-500 hover:border-wine-500 hover:text-wine-700 hover:bg-wine-50/40 transition-colors"
+                >
+                  {imgProcessing ? (
+                    <>
+                      <Loader2 className="w-6 h-6 animate-spin" />
+                      <span className="text-sm">Procesando imagen...</span>
+                    </>
+                  ) : (
+                    <>
+                      <ImagePlus className="w-6 h-6" strokeWidth={1.5} />
+                      <span className="text-sm font-medium">Elegir imagen del vino</span>
+                      <span className="text-xs text-gray-400">Click para seleccionar un archivo</span>
+                    </>
+                  )}
+                </button>
+              )}
+
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleImagePick}
+              />
+
+              {imgError && (
+                <p className="mt-2 text-xs text-red-600 flex items-center gap-1.5">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" /> {imgError}
+                </p>
+              )}
+            </div>
           </Section>
 
           <Section title="Datos de cosecha">

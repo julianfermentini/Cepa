@@ -25,6 +25,7 @@ type PublicLot struct {
 	BrixAtHarvest    *float64         `json:"brix_at_harvest,omitempty"`
 	PhAtHarvest      *float64         `json:"ph_at_harvest,omitempty"`
 	BottledAt        *time.Time       `json:"bottled_at,omitempty"`
+	ImageURL         *string          `json:"image_url,omitempty"`
 	ShortCode        string           `json:"short_code"`
 	QRCodeID         uuid.UUID        `json:"-"`
 	Winery           WineryPublic     `json:"winery"`

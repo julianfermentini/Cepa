@@ -55,6 +55,7 @@ func (s *Service) Create(ctx context.Context, wineryID uuid.UUID, req CreateLotR
 		BottleCount:      req.BottleCount,
 		BottledAt:        req.BottledAt,
 		LotCode:          req.LotCode,
+		ImageURL:         req.ImageURL,
 		Status:           "draft",
 		CreatedAt:        time.Now().UTC(),
 	}

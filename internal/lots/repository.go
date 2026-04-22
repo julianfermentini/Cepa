@@ -28,13 +28,13 @@ func (r *Repository) Create(ctx context.Context, lot *Lot) error {
 			harvest_date, harvest_kg, brix_at_harvest, ph_at_harvest,
 			fermentation_days, barrel_type, barrel_months,
 			winemaker_name, winemaker_note, bottle_count, bottled_at,
-			lot_code, status, created_at
+			lot_code, image_url, status, created_at
 		) VALUES (
 			$1, $2, $3, $4, $5, $6,
 			$7, $8, $9, $10,
 			$11, $12, $13,
 			$14, $15, $16, $17,
-			$18, $19, $20
+			$18, $19, $20, $21
 		)
 	`
 	_, err := r.pool.Exec(ctx, query,
@@ -42,7 +42,7 @@ func (r *Repository) Create(ctx context.Context, lot *Lot) error {
 		lot.HarvestDate, lot.HarvestKg, lot.BrixAtHarvest, lot.PHAtHarvest,
 		lot.FermentationDays, lot.BarrelType, lot.BarrelMonths,
 		lot.WinemakerName, lot.WinemakerNote, lot.BottleCount, lot.BottledAt,
-		lot.LotCode, lot.Status, lot.CreatedAt,
+		lot.LotCode, lot.ImageURL, lot.Status, lot.CreatedAt,
 	)
 	if err != nil {
 		var pgErr *pgconn.PgError
@@ -61,7 +61,7 @@ func (r *Repository) FindByID(ctx context.Context, id, wineryID uuid.UUID) (*Lot
 			harvest_date, harvest_kg, brix_at_harvest, ph_at_harvest,
 			fermentation_days, barrel_type, barrel_months,
 			winemaker_name, winemaker_note, bottle_count, bottled_at,
-			lot_code, status, hash, created_at
+			lot_code, image_url, status, hash, created_at
 		FROM lots
 		WHERE id = $1 AND winery_id = $2 AND deleted_at IS NULL
 	`
@@ -77,7 +77,7 @@ func (r *Repository) List(ctx context.Context, wineryID uuid.UUID, params ListPa
 			harvest_date, harvest_kg, brix_at_harvest, ph_at_harvest,
 			fermentation_days, barrel_type, barrel_months,
 			winemaker_name, winemaker_note, bottle_count, bottled_at,
-			lot_code, status, hash, created_at
+			lot_code, image_url, status, hash, created_at
 		FROM lots
 		WHERE winery_id = $1 AND deleted_at IS NULL
 	`
@@ -178,6 +178,16 @@ func (r *Repository) Update(ctx context.Context, id, wineryID uuid.UUID, req Upd
 		args = append(args, *req.FermentationDays)
 		argIdx++
 	}
+	if req.ImageURL != nil {
+		setClauses = append(setClauses, fmt.Sprintf("image_url = $%d", argIdx))
+		// Empty string → NULL (permite "quitar la imagen" desde el frontend).
+		if *req.ImageURL == "" {
+			args = append(args, nil)
+		} else {
+			args = append(args, *req.ImageURL)
+		}
+		argIdx++
+	}
 
 	if len(setClauses) == 0 {
 		return r.FindByID(ctx, id, wineryID)
@@ -220,7 +230,7 @@ func scanLot(row pgx.Row) (*Lot, error) {
 		&l.HarvestDate, &l.HarvestKg, &l.BrixAtHarvest, &l.PHAtHarvest,
 		&l.FermentationDays, &l.BarrelType, &l.BarrelMonths,
 		&l.WinemakerName, &l.WinemakerNote, &l.BottleCount, &l.BottledAt,
-		&l.LotCode, &l.Status, &l.Hash, &l.CreatedAt,
+		&l.LotCode, &l.ImageURL, &l.Status, &l.Hash, &l.CreatedAt,
 	)
 	if err != nil {
 		if err == pgx.ErrNoRows {
