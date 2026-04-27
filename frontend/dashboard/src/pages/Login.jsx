@@ -27,7 +27,7 @@ export default function Login() {
   return (
     <div className="min-h-screen flex">
       {/* Panel izquierdo — foto viñedo */}
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
+      <div className="hidden md:flex md:w-1/2 relative overflow-hidden">
         <img
           src="/vineyard-mendoza2.jpg"
           alt=""
@@ -77,12 +77,12 @@ export default function Login() {
         <div className="flex-1 flex items-center justify-center">
           <div className="w-full max-w-sm">
             {/* Mobile logo */}
-            <div className="mb-8 lg:hidden">
+            <div className="mb-8 md:hidden">
               <img src="/logoCepa.jpg" alt="Cepa" className="h-14 w-auto" />
             </div>
 
             <div className="mb-8">
-              <h1 className="text-3xl font-bold text-white">Bienvenido de vuelta</h1>
+              <h1 className="font-bold text-white" style={{ fontSize: '1.75rem', fontFamily: 'Inter, system-ui, sans-serif' }}>Bienvenido de vuelta</h1>
               <p className="text-gray-400 mt-2 text-sm">Ingresá tus credenciales para gestionar tu bodega.</p>
             </div>
 
