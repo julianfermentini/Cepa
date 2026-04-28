@@ -4,17 +4,17 @@ import { api } from '../api/client'
 import { useAuth } from '../context/AuthContext'
 import Layout from '../components/Layout'
 import StatusBadge from '../components/StatusBadge'
-import { Wine, CheckCircle2, FileEdit, Archive, ChevronRight, Loader2, Plus } from 'lucide-react'
+import { QrCode, LayoutGrid, FileText, Archive, Plus, Loader2 } from 'lucide-react'
 
-function StatCard({ label, value, Icon, accent, iconColor }) {
+function StatCard({ label, value, Icon, iconBg, iconColor }) {
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex items-start gap-4">
-      <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${accent}`}>
-        <Icon className={`w-5 h-5 ${iconColor}`} strokeWidth={1.75} />
+    <div className="rounded-xl p-4 flex items-center gap-4" style={{ backgroundColor: '#1c1c1c' }}>
+      <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: iconBg }}>
+        <Icon className="w-4 h-4" style={{ color: iconColor }} strokeWidth={1.75} />
       </div>
       <div>
-        <p className="text-3xl font-serif font-semibold text-gray-900 tabular-nums">{value}</p>
-        <p className="text-sm text-gray-500 mt-0.5">{label}</p>
+        <p className="text-2xl font-bold text-white tabular-nums leading-none">{value}</p>
+        <p className="text-xs mt-1" style={{ color: '#666' }}>{label}</p>
       </div>
     </div>
   )
@@ -45,104 +45,149 @@ export default function Dashboard() {
 
   return (
     <Layout>
-      {/* Hero banner */}
-      <div className="relative h-52 overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1504279577054-acfeccf8fc52?auto=format&fit=crop&w=1920&q=80')" }}
+      {/* Hero */}
+      <div className="relative overflow-hidden" style={{ height: '200px' }}>
+        <img
+          src="/dashboard-img2.jpg"
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ objectPosition: 'center 30%' }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-wine-950/90 via-wine-900/70 to-wine-800/40" />
-        <div className="relative z-10 h-full flex flex-col justify-end px-10 pb-8">
-          <p className="text-gold-300 text-sm font-medium mb-1">{greeting}</p>
-          <h1 className="text-white text-3xl font-serif font-semibold">
-            {winery?.name ?? 'Tu Bodega'}
-          </h1>
-          <p className="text-wine-300 text-sm mt-1">
-            {now.toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-          </p>
+        <div
+          className="absolute inset-0"
+          style={{ background: 'linear-gradient(to right, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.55) 55%, rgba(0,0,0,0.2) 100%)' }}
+        />
+        <div className="relative z-10 h-full flex items-center justify-between px-8">
+          <div>
+            <p className="text-xs font-semibold tracking-wider" style={{ color: '#C9A64B' }}>{greeting}</p>
+            <h1 className="text-white font-bold mt-1" style={{ fontSize: '2rem', fontFamily: '"Noto Serif", Georgia, serif' }}>
+              {winery?.name ?? 'Tu Bodega'}
+            </h1>
+            <p className="text-sm mt-1 capitalize" style={{ color: '#999' }}>
+              {now.toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+            </p>
+          </div>
+          <Link
+            to="/lots/new"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-white text-sm font-semibold shadow-lg transition-all"
+            style={{ backgroundColor: '#c0392b' }}
+            onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#a93226')}
+            onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#c0392b')}
+          >
+            <Plus className="w-4 h-4" strokeWidth={2.5} />
+            Nuevo lote
+          </Link>
         </div>
       </div>
 
-      <div className="px-10 py-8">
+      {/* Contenido */}
+      <div className="px-8 py-7" style={{ backgroundColor: '#111', minHeight: 'calc(100vh - 200px)' }}>
+
         {/* Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
-          <StatCard label="Total de lotes" value={counts.total}    Icon={Wine}         accent="bg-wine-50"    iconColor="text-wine-700" />
-          <StatCard label="Publicados"     value={counts.active}   Icon={CheckCircle2} accent="bg-emerald-50" iconColor="text-emerald-600" />
-          <StatCard label="Borradores"     value={counts.draft}    Icon={FileEdit}     accent="bg-amber-50"   iconColor="text-amber-600" />
-          <StatCard label="Archivados"     value={counts.archived} Icon={Archive}      accent="bg-gray-100"   iconColor="text-gray-500" />
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <StatCard label="Total de lotes" value={counts.total}    Icon={QrCode}      iconBg="rgba(212,175,55,0.15)"  iconColor="#C9A64B" />
+          <StatCard label="Publicados"     value={counts.active}   Icon={LayoutGrid}  iconBg="rgba(34,197,94,0.15)"   iconColor="#22c55e" />
+          <StatCard label="Borradores"     value={counts.draft}    Icon={FileText}    iconBg="rgba(156,163,175,0.12)" iconColor="#9ca3af" />
+          <StatCard label="Archivados"     value={counts.archived} Icon={Archive}     iconBg="rgba(239,68,68,0.15)"   iconColor="#ef4444" />
         </div>
 
-        {/* Recent lots */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-          <div className="px-6 py-5 flex items-center justify-between border-b border-gray-50">
+        {/* Lotes recientes */}
+        <div className="rounded-2xl overflow-hidden mb-5" style={{ backgroundColor: '#1c1c1c' }}>
+          <div className="px-6 py-5 flex items-center justify-between" style={{ borderBottom: '1px solid #2a2a2a' }}>
             <div>
-              <h2 className="font-serif text-lg font-semibold text-gray-900">Lotes recientes</h2>
-              <p className="text-xs text-gray-400 mt-0.5">Últimas actualizaciones de tu producción</p>
+              <h2 className="font-semibold text-white">Lotes recientes</h2>
+              <p className="text-xs mt-0.5" style={{ color: '#555' }}>Últimas actualizaciones de tu producción</p>
             </div>
-            <Link
-              to="/lots"
-              className="text-sm text-wine-700 hover:text-wine-900 font-medium flex items-center gap-1 transition-colors"
-            >
-              Ver todos
-              <ChevronRight className="w-4 h-4" strokeWidth={2} />
+            <Link to="/lots" className="text-sm font-medium" style={{ color: '#C9A64B' }}>
+              Ver todos →
             </Link>
           </div>
 
           {loading ? (
-            <div className="flex items-center justify-center py-16 gap-3 text-gray-400">
-              <Loader2 className="w-5 h-5 animate-spin" />
+            <div className="flex items-center justify-center py-14 gap-3 text-sm" style={{ color: '#555' }}>
+              <Loader2 className="w-4 h-4 animate-spin" />
               Cargando lotes...
             </div>
-          ) : recent.length === 0 ? (
-            <div className="text-center py-16 px-6">
-              <div className="w-16 h-16 bg-wine-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Wine className="w-8 h-8 text-wine-700" strokeWidth={1.5} />
-              </div>
-              <h3 className="font-serif text-lg font-semibold text-gray-900 mb-2">Tu primer lote te espera</h3>
-              <p className="text-gray-500 text-sm mb-6">Cargá los datos de producción y generá el QR para tu etiqueta.</p>
-              <Link to="/lots/new" className="btn-primary inline-flex items-center gap-2">
-                <Plus className="w-4 h-4" strokeWidth={2} />
-                Crear primer lote
-              </Link>
-            </div>
           ) : (
-            <table className="w-full">
-              <thead>
-                <tr className="bg-gray-50/60">
-                  <th className="text-left px-6 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Vino</th>
-                  <th className="text-left px-6 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Varietal</th>
-                  <th className="text-left px-6 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Cosecha</th>
-                  <th className="text-left px-6 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Estado</th>
-                  <th className="px-6 py-3" />
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {recent.map((lot) => (
-                  <tr key={lot.id} className="group hover:bg-stone-50/80 transition-colors">
-                    <td className="px-6 py-4">
-                      <Link to={`/lots/${lot.id}`} className="font-medium text-gray-900 hover:text-wine-700 transition-colors">
-                        {lot.name}
-                      </Link>
-                      {lot.lot_code && <p className="text-xs text-gray-400 mt-0.5">{lot.lot_code}</p>}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{lot.variety ?? '—'}</td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{lot.vintage_year ?? '—'}</td>
-                    <td className="px-6 py-4"><StatusBadge status={lot.status} /></td>
-                    <td className="px-6 py-4 text-right">
-                      <Link
-                        to={`/lots/${lot.id}`}
-                        className="text-xs text-gray-400 group-hover:text-wine-700 font-medium transition-colors opacity-0 group-hover:opacity-100 inline-flex items-center gap-1"
+            <>
+              <table className="w-full">
+                <thead>
+                  <tr style={{ borderBottom: '1px solid #242424' }}>
+                    {['Vino', 'Varietal', 'Cosecha', 'Estado', 'Scans'].map((col, i) => (
+                      <th
+                        key={col}
+                        className={`py-3 px-6 text-xs font-semibold uppercase tracking-wider ${i === 4 ? 'text-right' : 'text-left'}`}
+                        style={{ color: '#444' }}
                       >
-                        Ver
-                        <ChevronRight className="w-3.5 h-3.5" strokeWidth={2} />
-                      </Link>
-                    </td>
+                        {col}
+                      </th>
+                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {recent.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="text-center py-14 text-sm" style={{ color: '#444' }}>
+                        No hay lotes aún
+                      </td>
+                    </tr>
+                  ) : recent.map((lot) => (
+                    <tr key={lot.id} style={{ borderBottom: '1px solid #222' }}>
+                      <td className="px-6 py-4">
+                        <Link to={`/lots/${lot.id}`} className="font-medium text-white hover:text-wine-400 transition-colors text-sm">
+                          {lot.name}
+                        </Link>
+                        {lot.lot_code && <p className="text-xs mt-0.5" style={{ color: '#444' }}>{lot.lot_code}</p>}
+                      </td>
+                      <td className="px-6 py-4 text-sm" style={{ color: '#777' }}>{lot.variety ?? '—'}</td>
+                      <td className="px-6 py-4 text-sm" style={{ color: '#777' }}>{lot.vintage_year ?? '—'}</td>
+                      <td className="px-6 py-4"><StatusBadge status={lot.status} /></td>
+                      <td className="px-6 py-4 text-right text-sm font-bold" style={{ color: '#C9A64B' }}>
+                        {lot.scan_count ?? 0}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              <div style={{ borderTop: '1px dashed #2a2a2a' }}>
+                <Link
+                  to="/lots/new"
+                  className="flex items-center gap-2 text-sm w-full py-3.5 justify-center transition-colors"
+                  style={{ color: '#444' }}
+                  onMouseEnter={e => (e.currentTarget.style.color = '#777')}
+                  onMouseLeave={e => (e.currentTarget.style.color = '#444')}
+                >
+                  <Plus className="w-4 h-4" strokeWidth={1.75} />
+                  Agregar nuevo lote
+                </Link>
+              </div>
+            </>
           )}
         </div>
+
+        {/* Banner QR */}
+        <div className="rounded-2xl px-6 py-5 flex items-center justify-between gap-4" style={{ backgroundColor: '#1a0f00' }}>
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: 'rgba(212,175,55,0.18)' }}>
+              <QrCode className="w-5 h-5" style={{ color: '#C9A64B' }} strokeWidth={1.75} />
+            </div>
+            <div>
+              <p className="font-semibold text-white text-sm">Generá los QR de tus etiquetas</p>
+              <p className="text-xs mt-0.5" style={{ color: '#666' }}>
+                Cada lote publicado tiene un QR único. Descargalos desde la vista del lote.
+              </p>
+            </div>
+          </div>
+          <Link
+            to="/lots"
+            className="text-sm font-semibold px-4 py-2 rounded-lg whitespace-nowrap"
+            style={{ color: '#C9A64B', border: '1px solid rgba(212,175,55,0.25)', backgroundColor: 'rgba(212,175,55,0.08)' }}
+          >
+            Ver lotes →
+          </Link>
+        </div>
+
       </div>
     </Layout>
   )

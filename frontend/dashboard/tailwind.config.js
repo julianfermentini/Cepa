@@ -4,23 +4,15 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        serif:   ['"Playfair Display"', 'Georgia', 'serif'],
+        serif:   ['"Noto Serif"', 'Georgia', 'serif'],
         sans:    ['Inter', 'system-ui', 'sans-serif'],
         grotesk: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
-        jakarta: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
       },
       colors: {
-        cepa: {
-          primary:        '#8E24AC',
-          'primary-light':'#CE93D8',
-          'primary-dark': '#6A1B9A',
-          secondary:      '#4CAF50',
-          'secondary-light':'#A5D6A7',
-          tertiary:       '#FFD700',
-          'tertiary-light':'#FFF176',
-          neutral:        '#F5EFE6',
-          'neutral-dark': '#E8DDD0',
-        },
+        primary:   { DEFAULT: '#A4343A', dark: '#8a2a30', light: '#c0484f' },
+        secondary: { DEFAULT: '#C9A64B', dark: '#a8882f', light: '#dfc06e' },
+        tertiary:  { DEFAULT: '#3B1C22', dark: '#2a1018', light: '#4f2630' },
+        neutral:   { DEFAULT: '#1C1C1E', light: '#2a2a2c', dark: '#111113' },
         wine: {
           50:  '#fdf2f3',
           100: '#fce7e9',
@@ -29,17 +21,10 @@ export default {
           400: '#ec7a84',
           500: '#e04e5b',
           600: '#cc2f3d',
-          700: '#ac2330',
-          800: '#8f202c',
-          900: '#722f37',
-          950: '#2d0a10',
-        },
-        gold: {
-          200: '#f0d98a',
-          300: '#e8c96a',
-          400: '#d4af37',
-          500: '#b8962e',
-          600: '#9a7a22',
+          700: '#A4343A',
+          800: '#8a2a30',
+          900: '#3B1C22',
+          950: '#2a1018',
         },
       },
       backgroundImage: {

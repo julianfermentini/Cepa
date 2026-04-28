@@ -10,11 +10,23 @@ const STATUSES = [
   { value: 'archived', label: 'Archivado' },
 ]
 
+const inputStyle = {
+  width: '100%',
+  padding: '0.625rem 0.875rem',
+  backgroundColor: '#141414',
+  border: '1px solid #2a2a2a',
+  borderRadius: '0.625rem',
+  color: '#ffffff',
+  fontSize: '0.875rem',
+  outline: 'none',
+  transition: 'border-color 0.15s',
+}
+
 function Section({ title, children }) {
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-      <div className="px-6 py-4 border-b border-gray-50 bg-gray-50/50">
-        <h2 className="font-serif text-base font-semibold text-gray-800">{title}</h2>
+    <div className="rounded-2xl overflow-hidden" style={{ backgroundColor: '#1c1c1c', border: '1px solid #2a2a2a' }}>
+      <div className="px-6 py-3.5" style={{ borderBottom: '1px solid #242424', backgroundColor: '#191919' }}>
+        <h2 className="text-sm font-semibold text-white">{title}</h2>
       </div>
       <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
         {children}
@@ -26,9 +38,9 @@ function Section({ title, children }) {
 function Field({ label, hint, span, children }) {
   return (
     <div className={span === 2 ? 'sm:col-span-2' : ''}>
-      <label className="label">
+      <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#555' }}>
         {label}
-        {hint && <span className="normal-case font-normal text-gray-400 tracking-normal ml-1">— {hint}</span>}
+        {hint && <span className="normal-case font-normal tracking-normal ml-1" style={{ color: '#444' }}>— {hint}</span>}
       </label>
       {children}
     </div>
@@ -95,10 +107,21 @@ export default function LotForm() {
     }
   }
 
+  const inp = (field, props = {}) => (
+    <input
+      style={inputStyle}
+      value={form[field]}
+      onChange={set(field)}
+      onFocus={e => (e.target.style.borderColor = '#c0392b')}
+      onBlur={e => (e.target.style.borderColor = '#2a2a2a')}
+      {...props}
+    />
+  )
+
   if (fetching) {
     return (
       <Layout>
-        <div className="flex items-center justify-center h-64 gap-3 text-gray-400">
+        <div className="flex items-center justify-center h-64 gap-3 text-sm" style={{ color: '#555' }}>
           <Loader2 className="w-5 h-5 animate-spin" />
           Cargando...
         </div>
@@ -108,43 +131,43 @@ export default function LotForm() {
 
   return (
     <Layout>
-      <div className="px-10 py-10 max-w-3xl">
+      <div className="px-8 py-8 max-w-3xl" style={{ backgroundColor: '#111', minHeight: '100vh' }}>
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-sm text-gray-400 mb-6">
-          <Link to="/lots" className="hover:text-wine-700 transition-colors">Lotes</Link>
+        <div className="flex items-center gap-2 text-sm mb-6" style={{ color: '#555' }}>
+          <Link to="/lots" className="hover:text-white transition-colors">Lotes</Link>
           <span>/</span>
-          <span className="text-gray-700">{isEdit ? 'Editar lote' : 'Nuevo lote'}</span>
+          <span className="text-white">{isEdit ? 'Editar lote' : 'Nuevo lote'}</span>
         </div>
 
-        <div className="mb-8">
-          <h1 className="text-3xl font-serif font-semibold text-gray-900">
-            {isEdit ? 'Editar lote' : 'Nuevo lote'}
-          </h1>
-          <p className="text-gray-500 text-sm mt-1">
+        <div className="mb-7">
+          <h1 className="text-2xl font-bold text-white">{isEdit ? 'Editar lote' : 'Nuevo lote'}</h1>
+          <p className="text-sm mt-1" style={{ color: '#666' }}>
             {isEdit ? 'Modificá los datos del lote de producción.' : 'Cargá los datos de cosecha y elaboración.'}
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <Section title="Identificación">
             <Field label="Nombre del vino *" span={2}>
-              <input type="text" className="input" placeholder="Malbec Reserva 2022"
-                value={form.name} onChange={set('name')} required autoFocus />
+              {inp('name', { type: 'text', placeholder: 'Malbec Reserva 2022', required: true, autoFocus: true })}
             </Field>
             <Field label="Varietal">
-              <input type="text" className="input" placeholder="Malbec"
-                value={form.variety} onChange={set('variety')} />
+              {inp('variety', { type: 'text', placeholder: 'Malbec' })}
             </Field>
             <Field label="Año de cosecha">
-              <input type="number" className="input" placeholder="2022" min="1900" max="2099"
-                value={form.vintage_year} onChange={set('vintage_year')} />
+              {inp('vintage_year', { type: 'number', placeholder: '2022', min: '1900', max: '2099' })}
             </Field>
             <Field label="Código de lote" hint="ej. #VE2022-047">
-              <input type="text" className="input font-mono" placeholder="#VE2022-047"
-                value={form.lot_code} onChange={set('lot_code')} />
+              {inp('lot_code', { type: 'text', placeholder: '#VE2022-047', style: { ...inputStyle, fontFamily: 'monospace' } })}
             </Field>
             <Field label="Estado">
-              <select className="input" value={form.status} onChange={set('status')}>
+              <select
+                style={inputStyle}
+                value={form.status}
+                onChange={set('status')}
+                onFocus={e => (e.target.style.borderColor = '#c0392b')}
+                onBlur={e => (e.target.style.borderColor = '#2a2a2a')}
+              >
                 {STATUSES.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
               </select>
             </Field>
@@ -152,70 +175,75 @@ export default function LotForm() {
 
           <Section title="Datos de cosecha">
             <Field label="Kg cosechados">
-              <input type="number" className="input" placeholder="8500"
-                value={form.harvest_kg} onChange={set('harvest_kg')} step="0.01" min="0" />
+              {inp('harvest_kg', { type: 'number', placeholder: '8500', step: '0.01', min: '0' })}
             </Field>
             <Field label="Botellas producidas">
-              <input type="number" className="input" placeholder="3500"
-                value={form.bottle_count} onChange={set('bottle_count')} min="0" />
+              {inp('bottle_count', { type: 'number', placeholder: '3500', min: '0' })}
             </Field>
             <Field label="Brix al corte">
-              <input type="number" className="input" placeholder="24.5"
-                value={form.brix_at_harvest} onChange={set('brix_at_harvest')} step="0.1" min="0" />
+              {inp('brix_at_harvest', { type: 'number', placeholder: '24.5', step: '0.1', min: '0' })}
             </Field>
             <Field label="pH al corte">
-              <input type="number" className="input" placeholder="3.4"
-                value={form.ph_at_harvest} onChange={set('ph_at_harvest')} step="0.01" min="0" max="14" />
+              {inp('ph_at_harvest', { type: 'number', placeholder: '3.4', step: '0.01', min: '0', max: '14' })}
             </Field>
           </Section>
 
           <Section title="Elaboración">
             <Field label="Días de fermentación">
-              <input type="number" className="input" placeholder="21"
-                value={form.fermentation_days} onChange={set('fermentation_days')} min="0" />
+              {inp('fermentation_days', { type: 'number', placeholder: '21', min: '0' })}
             </Field>
             <Field label="Meses en barrica">
-              <input type="number" className="input" placeholder="14"
-                value={form.barrel_months} onChange={set('barrel_months')} min="0" />
+              {inp('barrel_months', { type: 'number', placeholder: '14', min: '0' })}
             </Field>
             <Field label="Tipo de barrica" span={2}>
-              <input type="text" className="input" placeholder="Roble francés 70% nueva"
-                value={form.barrel_type} onChange={set('barrel_type')} />
+              {inp('barrel_type', { type: 'text', placeholder: 'Roble francés 70% nueva' })}
             </Field>
           </Section>
 
           <Section title="Enólogo">
             <Field label="Nombre del enólogo" span={2}>
-              <input type="text" className="input" placeholder="María González"
-                value={form.winemaker_name} onChange={set('winemaker_name')} />
+              {inp('winemaker_name', { type: 'text', placeholder: 'María González' })}
             </Field>
-            <Field label="Nota del enólogo" hint="se usa para el storytelling con IA" span={2}>
+            <Field label="Nota del enólogo" hint="usada para el storytelling con IA" span={2}>
               <textarea
-                className="input h-32 resize-none leading-relaxed"
+                style={{ ...inputStyle, height: '8rem', resize: 'none', lineHeight: '1.6' }}
                 placeholder="Descripción personal del proceso y las decisiones de elaboración..."
                 value={form.winemaker_note}
                 onChange={set('winemaker_note')}
+                onFocus={e => (e.target.style.borderColor = '#c0392b')}
+                onBlur={e => (e.target.style.borderColor = '#2a2a2a')}
               />
             </Field>
           </Section>
 
           {error && (
-            <div className="flex items-center gap-3 bg-red-50 border border-red-100 text-red-700 px-4 py-3 rounded-xl text-sm">
+            <div className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm" style={{ backgroundColor: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', color: '#ef4444' }}>
               <AlertCircle className="w-4 h-4 shrink-0" strokeWidth={2} />
               {error}
             </div>
           )}
 
           <div className="flex gap-3 pt-2">
-            <button type="submit" className="btn-primary px-8 inline-flex items-center gap-2" disabled={loading}>
+            <button
+              type="submit"
+              disabled={loading}
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-white text-sm font-semibold transition-all disabled:opacity-50"
+              style={{ backgroundColor: '#c0392b' }}
+              onMouseEnter={e => !loading && (e.currentTarget.style.backgroundColor = '#a93226')}
+              onMouseLeave={e => !loading && (e.currentTarget.style.backgroundColor = '#c0392b')}
+            >
               {loading ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Guardando...
-                </>
+                <><Loader2 className="w-4 h-4 animate-spin" />Guardando...</>
               ) : isEdit ? 'Guardar cambios' : 'Crear lote'}
             </button>
-            <button type="button" className="btn-secondary" onClick={() => navigate('/lots')}>
+            <button
+              type="button"
+              onClick={() => navigate('/lots')}
+              className="px-6 py-2.5 rounded-xl text-sm font-medium transition-all"
+              style={{ backgroundColor: '#1c1c1c', border: '1px solid #2a2a2a', color: '#888' }}
+              onMouseEnter={e => { e.currentTarget.style.color = '#fff'; e.currentTarget.style.borderColor = '#3a3a3a' }}
+              onMouseLeave={e => { e.currentTarget.style.color = '#888'; e.currentTarget.style.borderColor = '#2a2a2a' }}
+            >
               Cancelar
             </button>
           </div>

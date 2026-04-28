@@ -1,7 +1,13 @@
 const styles = {
-  draft:    'bg-amber-50 text-amber-700 ring-1 ring-amber-200',
-  active:   'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200',
-  archived: 'bg-gray-100 text-gray-600 ring-1 ring-gray-200',
+  draft:    { backgroundColor: 'rgba(251,191,36,0.12)', color: '#fbbf24', border: '1px solid rgba(251,191,36,0.25)' },
+  active:   { backgroundColor: 'rgba(34,197,94,0.12)',  color: '#22c55e', border: '1px solid rgba(34,197,94,0.25)' },
+  archived: { backgroundColor: 'rgba(156,163,175,0.1)', color: '#9ca3af', border: '1px solid rgba(156,163,175,0.2)' },
+}
+
+const dots = {
+  draft:    '#fbbf24',
+  active:   '#22c55e',
+  archived: '#9ca3af',
 }
 
 const labels = {
@@ -10,16 +16,14 @@ const labels = {
   archived: 'Archivado',
 }
 
-const dots = {
-  draft:    'bg-amber-400',
-  active:   'bg-emerald-400',
-  archived: 'bg-gray-400',
-}
-
 export default function StatusBadge({ status }) {
+  const style = styles[status] ?? styles.draft
   return (
-    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${styles[status] ?? styles.draft}`}>
-      <span className={`w-1.5 h-1.5 rounded-full ${dots[status] ?? dots.draft}`} />
+    <span
+      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium"
+      style={style}
+    >
+      <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: dots[status] ?? dots.draft }} />
       {labels[status] ?? status}
     </span>
   )
